@@ -13,6 +13,25 @@
         tools:layout_editor_absoluteX="3dp"
         tools:layout_editor_absoluteY="124dp" />
 
+    <!---<ImageButton
+        android:id="@+id/add"
+        android:layout_width="397dp"
+        android:layout_height="57dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        app:layout_constraintStart_toEndOf="@+id/main_list" />-->
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add"
+        android:layout_width="60dp"
+        android:layout_height="58dp"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="30dp"
+        android:contentDescription="add button"
+        android:src="@android:drawable/ic_input_add"
+        app:layout_constraintBottom_toTopOf="@id/done"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <Button
         android:id="@+id/done"
         android:layout_width="match_parent"

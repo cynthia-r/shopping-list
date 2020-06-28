@@ -11,10 +11,12 @@ import android.widget.Toast;
 import com.example.shoppinglist.model.Item;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements /*ShoppingListViewAdapter.ItemClickListener,*/ ShoppingListViewAdapter.OnItemCheckListener {
+public class MainActivity extends AppCompatActivity implements ShoppingListViewAdapter.OnItemCheckListener {
 
-    ShoppingListViewAdapter adapter;
+    private ShoppingListViewAdapter adapter;
+    private List<Item> selectedItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,26 +35,21 @@ public class MainActivity extends AppCompatActivity implements /*ShoppingListVie
         RecyclerView recyclerView = findViewById(R.id.main_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ShoppingListViewAdapter(this, itemList);
-        //adapter.setClickListener(this);
         adapter.setItemCheckListener(this);
         recyclerView.setAdapter(adapter);
     }
 
-    // TODO see if I need this functionality
-    /*@Override
-    public void onItemClick(View view, int position) {
-        Toast.makeText(this, "You clicked " + adapter.getItem(position).getName() + " on row number " + position, Toast.LENGTH_SHORT).show();
-    }*/
-
     @Override
     public void onItemCheck(int position) {
         Item item = adapter.getItem(position);
-        Toast.makeText(this, "You checked " + item.getName(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "You checked " + item.getName(), Toast.LENGTH_SHORT).show();
+        selectedItems.add(item);
     }
 
     @Override
     public void onItemUncheck(int position) {
         Item item = adapter.getItem(position);
-        Toast.makeText(this, "You unchecked " + item.getName(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "You unchecked " + item.getName(), Toast.LENGTH_SHORT).show();
+        selectedItems.remove(item);
     }
 }

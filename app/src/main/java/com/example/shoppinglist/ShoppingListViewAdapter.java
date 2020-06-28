@@ -18,7 +18,6 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
 
     private List<Item> mData;
     private LayoutInflater mInflater;
-    private ItemClickListener mClickListener;
     private OnItemCheckListener mOnItemCheckListener;
 
     // data is passed into the constructor
@@ -48,31 +47,26 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
     }
 
     // stores and recycles views as they are scrolled off screen
-    public class ShoppingListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CheckBox.OnCheckedChangeListener {
+    public class ShoppingListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener/*, CheckBox.OnCheckedChangeListener*/ {
         CheckBox checkbox;
         TextView myTextView;
 
         ShoppingListViewHolder(View itemView) {
             super(itemView);
             myTextView = itemView.findViewById(R.id.item);
+
+            // Bind checkbox changes to onclick events
+            // So that the user can click anywhere on the item to select/un-select it
             itemView.setOnClickListener(this);
             checkbox = itemView.findViewById(R.id.checkbox);
-            checkbox.setClickable(true);
-            checkbox.setOnCheckedChangeListener(this);
+            checkbox.setClickable(false);
         }
 
         @Override
         public void onClick(View view) {
-            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
-        }
 
-        public void setOnClickListener(View.OnClickListener onClickListener) {
-            itemView.setOnClickListener(onClickListener);
-        }
-
-        @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             if (mOnItemCheckListener != null) {
+                checkbox.setChecked(!checkbox.isChecked());
                 if (checkbox.isChecked()) {
                     mOnItemCheckListener.onItemCheck(getAdapterPosition());
                 }
@@ -88,19 +82,9 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
         return mData.get(id);
     }
 
-    // allows clicks events to be caught
-    void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
-    }
-
     // allows check events to be caught
     void setItemCheckListener(OnItemCheckListener onItemCheckListener) {
         this.mOnItemCheckListener = onItemCheckListener;
-    }
-
-    // parent activity will implement this method to respond to click events
-    public interface ItemClickListener {
-        void onItemClick(View view, int position);
     }
 
     // parent activity will implement this method to respond to check events

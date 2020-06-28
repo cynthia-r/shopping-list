@@ -47,7 +47,7 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
     }
 
     // stores and recycles views as they are scrolled off screen
-    public class ShoppingListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener/*, CheckBox.OnCheckedChangeListener*/ {
+    public class ShoppingListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         CheckBox checkbox;
         TextView myTextView;
 

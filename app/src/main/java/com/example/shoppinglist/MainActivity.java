@@ -4,19 +4,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.shoppinglist.model.Item;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements ShoppingListViewAdapter.OnItemCheckListener {
 
     private ShoppingListViewAdapter adapter;
-    private List<Item> selectedItems = new ArrayList<>();
+    private ArrayList<Item> selectedItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +35,21 @@ public class MainActivity extends AppCompatActivity implements ShoppingListViewA
         itemList.add(new Item("Eau gallon"));
         itemList.add(new Item("Lardons"));
 
-        // set up the RecyclerView
+        // set up the shopping list RecyclerView
         RecyclerView recyclerView = findViewById(R.id.main_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ShoppingListViewAdapter(this, itemList);
         adapter.setItemCheckListener(this);
         recyclerView.setAdapter(adapter);
+
+        // Set up the Done button
+        Button button = findViewById(R.id.done);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openConfirmActivity();
+            }
+        });
     }
 
     @Override
@@ -51,5 +64,15 @@ public class MainActivity extends AppCompatActivity implements ShoppingListViewA
         Item item = adapter.getItem(position);
         //Toast.makeText(this, "You unchecked " + item.getName(), Toast.LENGTH_SHORT).show();
         selectedItems.remove(item);
+    }
+
+    private void openConfirmActivity(){
+        Intent intent = new Intent(this, ConfirmActivity.class);
+        Bundle bundle = new Bundle();
+        ArrayList<Parcelable> parcelableList = new ArrayList<>();
+        parcelableList.addAll(selectedItems);
+        bundle.putParcelableArrayList("data", parcelableList);
+        intent.putExtra("shoppingList", bundle);
+        startActivity(intent);
     }
 }

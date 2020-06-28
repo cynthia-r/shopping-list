@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ConfirmActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/main_list"
@@ -12,15 +12,5 @@
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="3dp"
         tools:layout_editor_absoluteY="124dp" />
-
-    <Button
-        android:id="@+id/done"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Done"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="0dp" />
-    <!-- Add checked icon in button -->
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

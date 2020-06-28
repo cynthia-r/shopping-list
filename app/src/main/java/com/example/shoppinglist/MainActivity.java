@@ -17,24 +17,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.shoppinglist.model.Item;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements ShoppingListViewAdapter.OnItemCheckListener, AddFragment.AddItemDialogListener {
 
     private ShoppingListViewAdapter adapter;
     private List<Item> allItems = new ArrayList<>();
+    private Set<String> allItemSet = new HashSet<>();
     private List<Item> selectedItems = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -47,15 +39,9 @@ public class MainActivity extends AppCompatActivity implements ShoppingListViewA
         FileService fileService = new FileService(this);
         allItems = fileService.openFile(filename);
 
-        String[] files = this.fileList();
-
-        // data to populate the RecyclerView with
-        /*ArrayList<Item> itemList = new ArrayList<>();
-        itemList.add(new Item("Barres"));
-        itemList.add(new Item("Cereales cuicui"));
-        itemList.add(new Item("Persil lapin"));
-        itemList.add(new Item("Eau gallon"));
-        itemList.add(new Item("Lardons"));*/
+        for (Item item : allItems) {
+            allItemSet.add(item.getName());
+        }
 
         // set up the shopping list RecyclerView
         RecyclerView recyclerView = findViewById(R.id.main_list);
@@ -99,7 +85,13 @@ public class MainActivity extends AppCompatActivity implements ShoppingListViewA
 
     @Override
     public void onItemAdd(String inputText) {
+
+        if (inputText.isEmpty() || allItemSet.contains(inputText)) {
+            return;
+        }
+
         allItems.add(new Item(inputText));
+        allItemSet.add(inputText);
         adapter.notifyDataSetChanged();
     }
 

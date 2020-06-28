@@ -13,4 +13,13 @@
         tools:layout_editor_absoluteX="3dp"
         tools:layout_editor_absoluteY="124dp" />
 
+    <Button
+        android:id="@+id/go"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Go"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
+    <!-- Add an icon in button -->
+
 </androidx.constraintlayout.widget.ConstraintLayout>

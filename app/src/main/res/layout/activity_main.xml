@@ -13,14 +13,6 @@
         tools:layout_editor_absoluteX="3dp"
         tools:layout_editor_absoluteY="124dp" />
 
-    <!---<ImageButton
-        android:id="@+id/add"
-        android:layout_width="397dp"
-        android:layout_height="57dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        app:layout_constraintStart_toEndOf="@+id/main_list" />-->
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add"
         android:layout_width="60dp"

@@ -44,7 +44,10 @@ public class MainActivity extends AppCompatActivity implements ShoppingListViewA
         setContentView(R.layout.activity_main);
 
         String filename = "listFile";
-        allItems = openFile(filename);
+        FileService fileService = new FileService(this);
+        allItems = fileService.openFile(filename);
+
+        String[] files = this.fileList();
 
         // data to populate the RecyclerView with
         /*ArrayList<Item> itemList = new ArrayList<>();
@@ -108,60 +111,5 @@ public class MainActivity extends AppCompatActivity implements ShoppingListViewA
         bundle.putParcelableArrayList("data", parcelableList);
         intent.putExtra("shoppingList", bundle);
         startActivity(intent);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private List<Item> openFile(String filename) {
-        File directory = getFilesDir();
-        File file = new File(directory, filename);
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            }
-            catch (IOException e) {
-                Toast.makeText(this, "Failed to create file", Toast.LENGTH_SHORT);
-                return new ArrayList<>();
-            }
-        }
-
-        FileInputStream fis = null;
-        try {
-            fis = this.openFileInput(filename);
-        } catch (FileNotFoundException e) {
-            Toast.makeText(this, "Could not find file", Toast.LENGTH_SHORT);
-            return new ArrayList<>();
-        }
-        InputStreamReader inputStreamReader =
-                new InputStreamReader(fis, StandardCharsets.UTF_8);
-
-        List<Item> items = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
-            String line = reader.readLine();
-            while (line != null) {
-                Item item = new Item(line);
-                items.add(item);
-                line = reader.readLine();
-            }
-        } catch (IOException e) {
-            Toast.makeText(this, "Failed to write to file", Toast.LENGTH_SHORT);
-        }
-
-        return items;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void writeToFile(String filename, List<Item> items) {
-        try (FileOutputStream fos = this.openFileOutput(filename, Context.MODE_PRIVATE)) {
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
-
-            for (Item item: items) {
-                bw.write(item.getName());
-                bw.newLine();
-            }
-
-        }
-        catch (IOException e) {
-            Toast.makeText(this, "Failed to write to file", Toast.LENGTH_SHORT);
-        }
     }
 }

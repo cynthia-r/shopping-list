@@ -6,11 +6,13 @@ import androidx.core.app.NavUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.shoppinglist.model.Item;
 
@@ -56,7 +58,28 @@ public class ConfirmActivity extends AppCompatActivity {
         FileService fileService = new FileService(this);
         fileService.writeToFile(filename, items);
 
-        //NavUtils.navigateUpFromSameTask(this);
+        sendEmail(items);
+
         finish();
+    }
+
+    private void sendEmail(List<Item> items) {
+
+        StringBuilder sb = new StringBuilder();
+        for (Item item : items) {
+            sb.append(item.getName());
+            sb.append("\n");
+        }
+
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"add-to-things-ryh544m1umg5aj3wf68@things.email"});
+        i.putExtra(Intent.EXTRA_SUBJECT, "Liste de courses");
+        i.putExtra(Intent.EXTRA_TEXT   , sb.toString());
+        try {
+            startActivity(Intent.createChooser(i, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

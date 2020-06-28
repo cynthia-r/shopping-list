@@ -67,6 +67,12 @@ public class FileService {
         return items;
     }
 
+    /**
+     * Writes the specified items to the file.
+     * This rewrites the file instead of appending, so only the selected items will be saved.
+     * @param filename
+     * @param items
+     */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void writeToFile(String filename, List<Item> items) {
         try (FileOutputStream fos = mContext.openFileOutput(filename, Context.MODE_PRIVATE)) {

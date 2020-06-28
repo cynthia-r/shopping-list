@@ -90,8 +90,12 @@ public class MainActivity extends AppCompatActivity implements ShoppingListViewA
             return;
         }
 
-        allItems.add(new Item(inputText));
+        Item item = new Item(inputText);
+        allItems.add(item);
         allItemSet.add(inputText);
+        selectedItems.add(item);
+
+        adapter.setItemSelected(inputText);
         adapter.notifyDataSetChanged();
     }
 

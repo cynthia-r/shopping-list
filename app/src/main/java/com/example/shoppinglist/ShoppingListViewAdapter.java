@@ -11,24 +11,24 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.shoppinglist.model.Item;
+import com.example.shoppinglist.model.ShoppingList;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListViewAdapter.ShoppingListViewHolder> {
 
-    private List<Item> mData;
+    private ShoppingList mData;
     private Map<String, Boolean> isSelectedMap = new HashMap<>();
     private LayoutInflater mInflater;
     private OnItemCheckListener mOnItemCheckListener;
 
     // data is passed into the constructor
-    ShoppingListViewAdapter(Context context, List<Item> data) {
+    ShoppingListViewAdapter(Context context, ShoppingList data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
-        for (Item item : data) {
-            isSelectedMap.put(item.getName(), false);
+        for (String itemName : data.toList()) {
+            isSelectedMap.put(itemName, false);
         }
     }
 

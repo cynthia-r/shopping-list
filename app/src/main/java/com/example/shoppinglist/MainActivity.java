@@ -1,13 +1,11 @@
 package com.example.shoppinglist;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,17 +14,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.shoppinglist.model.Item;
+import com.example.shoppinglist.model.ShoppingList;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements ShoppingListViewAdapter.OnItemCheckListener, AddFragment.AddItemDialogListener {
 
     private ShoppingListViewAdapter adapter;
-    private List<Item> allItems = new ArrayList<>();
-    private Set<String> allItemSet = new HashSet<>();
+    private ShoppingList shoppingList;
     private List<Item> selectedItems = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -37,16 +33,12 @@ public class MainActivity extends AppCompatActivity implements ShoppingListViewA
 
         String filename = "listFile";
         FileService fileService = new FileService(this);
-        allItems = fileService.openFile(filename);
-
-        for (Item item : allItems) {
-            allItemSet.add(item.getName());
-        }
+        shoppingList = fileService.openFile(filename);
 
         // set up the shopping list RecyclerView
         RecyclerView recyclerView = findViewById(R.id.main_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new ShoppingListViewAdapter(this, allItems);
+        adapter = new ShoppingListViewAdapter(this, shoppingList);
         adapter.setItemCheckListener(this);
         recyclerView.setAdapter(adapter);
 
@@ -86,13 +78,12 @@ public class MainActivity extends AppCompatActivity implements ShoppingListViewA
     @Override
     public void onItemAdd(String inputText) {
 
-        if (inputText.isEmpty() || allItemSet.contains(inputText)) {
+        if (inputText.isEmpty() || shoppingList.contains(inputText)) {
             return;
         }
 
         Item item = new Item(inputText);
-        allItems.add(item);
-        allItemSet.add(inputText);
+        shoppingList.add(item);
         selectedItems.add(item);
 
         adapter.setItemSelected(inputText);

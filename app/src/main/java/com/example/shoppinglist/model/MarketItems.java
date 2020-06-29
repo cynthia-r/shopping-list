@@ -1,7 +1,6 @@
 package com.example.shoppinglist.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class MarketItems {
     //public List<Item> items = new ArrayList<>();
@@ -18,10 +17,16 @@ public class MarketItems {
             new Item("Lardons")
     };
 
-    public MarketItems() {
+    private HashMap<String, Integer> sortMap = new HashMap<>();
 
-        /*for (Item item : marketItems) {
-            items.add(item);
-        }*/
+    public MarketItems() {
+        for (int i=0; i<marketItems.length; i++) {
+            sortMap.put(marketItems[i].getName(), i);
+        }
+    }
+
+    public int getPosition(String itemName) {
+        return sortMap.containsKey(itemName)
+            ? sortMap.get(itemName) : -1;
     }
 }

@@ -7,6 +7,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 
 import com.example.shoppinglist.model.Item;
+import com.example.shoppinglist.model.ShoppingList;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -29,7 +30,7 @@ public class FileService {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public List<Item> openFile(String filename) {
+    public ShoppingList openFile(String filename) {
         File directory = mContext.getFilesDir();
         File file = new File(directory, filename);
         if (!file.exists()) {
@@ -38,7 +39,7 @@ public class FileService {
             }
             catch (IOException e) {
                 Toast.makeText(mContext, "Failed to create file", Toast.LENGTH_SHORT);
-                return new ArrayList<>();
+                return new ShoppingList();
             }
         }
 
@@ -47,24 +48,24 @@ public class FileService {
             fis = mContext.openFileInput(filename);
         } catch (FileNotFoundException e) {
             Toast.makeText(mContext, "Could not find file", Toast.LENGTH_SHORT);
-            return new ArrayList<>();
+            return new ShoppingList();
         }
         InputStreamReader inputStreamReader =
                 new InputStreamReader(fis, StandardCharsets.UTF_8);
 
-        List<Item> items = new ArrayList<>();
+        ShoppingList shoppingList = new ShoppingList();
         try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
             String line = reader.readLine();
             while (line != null) {
                 Item item = new Item(line);
-                items.add(item);
+                shoppingList.add(item);
                 line = reader.readLine();
             }
         } catch (IOException e) {
             Toast.makeText(mContext, "Failed to write to file", Toast.LENGTH_SHORT);
         }
 
-        return items;
+        return shoppingList;
     }
 
     /**

@@ -14,12 +14,22 @@
         tools:layout_editor_absoluteY="124dp" />
 
     <Button
-        android:id="@+id/go"
-        android:layout_width="match_parent"
+        android:id="@+id/export"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Go"
+        android:text="Export"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteX="0dp" />
     <!-- Add an icon in button -->
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

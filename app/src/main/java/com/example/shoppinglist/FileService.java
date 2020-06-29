@@ -21,6 +21,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 public class FileService {
     private Context mContext;
@@ -31,19 +32,11 @@ public class FileService {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public ShoppingList openFile(String filename) {
-        File directory = mContext.getFilesDir();
-        File file = new File(directory, filename);
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            }
-            catch (IOException e) {
-                Toast.makeText(mContext, "Failed to create file", Toast.LENGTH_SHORT);
-                return new ShoppingList();
-            }
+        if (!createFileIfNotExists(filename)) {
+            return new ShoppingList();
         }
 
-        FileInputStream fis = null;
+        FileInputStream fis;
         try {
             fis = mContext.openFileInput(filename);
         } catch (FileNotFoundException e) {
@@ -57,8 +50,15 @@ public class FileService {
         try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
             String line = reader.readLine();
             while (line != null) {
-                Item item = new Item(line);
+                StringTokenizer tokenizer = new StringTokenizer(line, ":");
+                String itemName = tokenizer.nextToken();
+                int isSelected = tokenizer.hasMoreTokens()
+                        ? Integer.parseInt(tokenizer.nextToken()) : 0;
+                Item item = new Item(itemName);
                 shoppingList.add(item);
+                if (isSelected > 0) {
+                    shoppingList.select(itemName);
+                }
                 line = reader.readLine();
             }
         } catch (IOException e) {
@@ -76,11 +76,17 @@ public class FileService {
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void writeToFile(String filename, List<Item> items) {
+        if (!createFileIfNotExists(filename)) {
+            return;
+        }
+
         try (FileOutputStream fos = mContext.openFileOutput(filename, Context.MODE_PRIVATE)) {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
             for (Item item: items) {
                 bw.write(item.getName());
+                bw.write(':');
+                bw.write('0');
                 bw.newLine();
             }
 
@@ -89,5 +95,49 @@ public class FileService {
         catch (IOException e) {
             Toast.makeText(mContext, "Failed to write to file", Toast.LENGTH_SHORT);
         }
+    }
+
+    /**
+     * Writes the specified items to the file.
+     * This rewrites the file instead of appending, so only the selected items will be saved.
+     * @param filename
+     * @param shoppingList
+     */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void writeToFile(String filename, ShoppingList shoppingList) {
+        if (!createFileIfNotExists(filename)) {
+            return;
+        }
+
+        try (FileOutputStream fos = mContext.openFileOutput(filename, Context.MODE_PRIVATE)) {
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+            for (Item item: shoppingList.toList(false)) {
+                bw.write(item.getName());
+                bw.write(':');
+                bw.write(shoppingList.isSelected(item.getName()) ? '1':'0');
+                bw.newLine();
+            }
+
+            bw.flush();
+        }
+        catch (IOException e) {
+            Toast.makeText(mContext, "Failed to write to file", Toast.LENGTH_SHORT);
+        }
+    }
+
+    private boolean createFileIfNotExists(String filename) {
+        File directory = mContext.getFilesDir();
+        File file = new File(directory, filename);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            }
+            catch (IOException e) {
+                Toast.makeText(mContext, "Failed to create file", Toast.LENGTH_SHORT);
+                return false;
+            }
+        }
+        return true;
     }
 }

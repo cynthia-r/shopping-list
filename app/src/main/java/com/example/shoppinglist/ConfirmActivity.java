@@ -2,7 +2,6 @@ package com.example.shoppinglist;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NavUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,26 +40,37 @@ public class ConfirmActivity extends AppCompatActivity {
         adapter = new ConfirmListViewAdapter(this, itemList);
         recyclerView.setAdapter(adapter);
 
-        // Set up the Done button
-        Button button = findViewById(R.id.go);
+        // Set up the Export button
+        Button button = findViewById(R.id.export);
         button.setOnClickListener(new View.OnClickListener() {
+            //@RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onClick(View v) {
+                sendEmail(itemList);
+            }
+        });
+
+        // Set up the Done button
+        Button doneButton = findViewById(R.id.save);
+        doneButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
-                saveAndGo(itemList);
+                save(itemList);
             }
         });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void saveAndGo(List<Item> items) {
+    private void save(List<Item> items) {
         String filename = "listFile";
         FileService fileService = new FileService(this);
         fileService.writeToFile(filename, items);
 
-        sendEmail(items);
-
+        Intent intent = new Intent();
+        setResult(3, intent);
         finish();
+        // TODO how to close activity on button press?
     }
 
     private void sendEmail(List<Item> items) {

@@ -19,7 +19,7 @@ import java.util.Map;
 public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListViewAdapter.ShoppingListViewHolder> {
 
     private ShoppingList mData;
-    private Map<String, Boolean> isSelectedMap = new HashMap<>();
+    //private Map<String, Boolean> isSelectedMap = new HashMap<>();
     private LayoutInflater mInflater;
     private OnItemCheckListener mOnItemCheckListener;
 
@@ -27,9 +27,9 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
     ShoppingListViewAdapter(Context context, ShoppingList data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
-        for (String itemName : data.toList()) {
+        /*for (String itemName : data.toList()) {
             isSelectedMap.put(itemName, false);
-        }
+        }*/
     }
 
     // inflates the row layout from xml when needed
@@ -44,7 +44,8 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
     public void onBindViewHolder(final ShoppingListViewHolder holder, int position) {
         Item item = mData.get(position);
         holder.myTextView.setText(item.getName());
-        holder.checkbox.setChecked(isSelectedMap.get(item.getName()));
+        //holder.checkbox.setChecked(isSelectedMap.get(item.getName()));
+        holder.checkbox.setChecked(mData.isSelected(item.getName()));
     }
 
     // total number of rows
@@ -78,11 +79,11 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
                 Item item = getItem(position);
                 if (checkbox.isChecked()) {
                     mOnItemCheckListener.onItemCheck(position);
-                    isSelectedMap.put(item.getName(), true);
+                    //isSelectedMap.put(item.getName(), true);
                 }
                 else {
                     mOnItemCheckListener.onItemUncheck(position);
-                    isSelectedMap.put(item.getName(), false);
+                    //isSelectedMap.put(item.getName(), false);
                 }
             }
         }
@@ -93,9 +94,9 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
         return mData.get(id);
     }
 
-    public void setItemSelected(String itemName) {
+    /*public void setItemSelected(String itemName) {
         isSelectedMap.put(itemName, true);
-    }
+    }*/
 
     // allows check events to be caught
     void setItemCheckListener(OnItemCheckListener onItemCheckListener) {

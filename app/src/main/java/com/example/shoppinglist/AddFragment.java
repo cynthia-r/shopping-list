@@ -35,6 +35,8 @@ import java.util.function.Function;
  */
 public class AddFragment extends DialogFragment implements SearchView.OnQueryTextListener {
 
+    private AddItemDialogListener mAddItemDialogListener;
+
     public AddFragment() {
         // Required empty public constructor
     }
@@ -76,8 +78,7 @@ public class AddFragment extends DialogFragment implements SearchView.OnQueryTex
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // On success
-                AddItemDialogListener listener = (AddItemDialogListener) getActivity();
-                listener.onItemAdd(autoTextView.getText().toString());
+                mAddItemDialogListener.onItemAdd(autoTextView.getText().toString());
             }
         });
         alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -104,14 +105,17 @@ public class AddFragment extends DialogFragment implements SearchView.OnQueryTex
 
     @Override
     public boolean onQueryTextSubmit(String s) {
-        AddItemDialogListener listener = (AddItemDialogListener) getActivity();
-        listener.onItemAdd(s);
+        mAddItemDialogListener.onItemAdd(s);
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String s) {
         return false;
+    }
+
+    public void setAddItemDialogListener(AddItemDialogListener addItemDialogListener) {
+        mAddItemDialogListener = addItemDialogListener;
     }
 
     public interface AddItemDialogListener {

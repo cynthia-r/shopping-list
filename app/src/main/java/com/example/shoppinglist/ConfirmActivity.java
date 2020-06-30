@@ -70,7 +70,6 @@ public class ConfirmActivity extends AppCompatActivity {
         Intent intent = new Intent();
         setResult(3, intent);
         finish();
-        // TODO how to close activity on button press?
     }
 
     private void sendEmail(List<Item> items) {

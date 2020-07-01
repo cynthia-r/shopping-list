@@ -75,16 +75,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Create a new fragment and specify the fragment to show based on nav item clicked
         Fragment fragment = null;
         Class fragmentClass;
+        String tag;
         switch(id)
         {
             case R.id.nav_shopping_list:
                 fragmentClass = ShoppingListFragment.class;
+                tag = "ShoppingList";
                 break;
             case R.id.nav_catalog:
                 fragmentClass = CatalogFragment.class;
+                tag = "Catalog";
                 break;
             default:
                 fragmentClass = ShoppingListFragment.class;
+                tag = "ShoppingList";
         }
 
         try {
@@ -99,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             // Replace whatever is in the fragment_container view with this fragment,
             // and add the transaction to the back stack so the user can navigate back
-            fragmentTransaction.replace(R.id.fragment_frame, fragment);
+            fragmentTransaction.replace(R.id.fragment_frame, fragment, tag);
             fragmentTransaction.addToBackStack(null);
 
             fragmentTransaction.commit();
@@ -113,11 +117,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         FragmentManager fm = getSupportFragmentManager();
-        ShoppingListFragment shoppingListFragment = (ShoppingListFragment)
-                fm.findFragmentById(R.id.fragment_frame);
 
-        AddFragment alertDialog = AddFragment.newInstance();
-        alertDialog.setAddItemDialogListener(shoppingListFragment);
-        alertDialog.show(fm, "fragment_alert");
+        Fragment fragment = fm.findFragmentById(R.id.fragment_frame);
+        String tag = fragment.getTag();
+        if (tag == "ShoppingList") {
+            ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragment;
+            AddFragment alertDialog = AddFragment.newInstance();
+            alertDialog.setAddItemDialogListener(shoppingListFragment);
+            alertDialog.show(fm, "fragment_alert");
+        }
+        else if (tag == "Catalog") {
+            CatalogFragment catalogFragment = (CatalogFragment)fragment;
+            AddCatalogItemFragment alertDialog = AddCatalogItemFragment.newInstance();
+            alertDialog.setAddCatalogItemDialogListener(catalogFragment);
+            alertDialog.show(fm, "fragment_alert");
+        }
+
+
+
     }
 }

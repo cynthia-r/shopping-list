@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.shoppinglist.model.Item;
 import com.example.shoppinglist.model.MarketItems;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -24,7 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
  * Use the {@link CatalogFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CatalogFragment extends Fragment {
+public class CatalogFragment extends Fragment implements AddCatalogItemFragment.AddCatalogItemDialogListener {
 
     private CatalogListViewAdapter adapter;
     private MarketItems marketItems;
@@ -79,12 +80,17 @@ public class CatalogFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onStop () {
-        // TODO save market item list
+
         String filename = "catalog";
-        //FileService fileService = new FileService(getContext());
-        //fileService.writeToFile(filename, marketItems);
+        FileService fileService = new FileService(getContext());
+        fileService.saveMarketItems(filename, marketItems);
 
         super.onStop();
     }
 
+    @Override
+    public void onItemAdd(String inputText) {
+        Item newItem = new Item(inputText);
+        marketItems.add(newItem);
+    }
 }

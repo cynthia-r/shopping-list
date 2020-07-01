@@ -63,7 +63,7 @@ public class FileService {
                 line = reader.readLine();
             }
         } catch (IOException e) {
-            Toast.makeText(mContext, "Failed to write to file", Toast.LENGTH_SHORT);
+            Toast.makeText(mContext, "Failed to read from file", Toast.LENGTH_SHORT);
         }
 
         return shoppingList;
@@ -71,8 +71,39 @@ public class FileService {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public MarketItems readMarketItems(String filename) {
-        // TODO read from disk
-        return new MarketItems();
+        if (!createFileIfNotExists(filename)) {
+            return new MarketItems();
+        }
+
+        FileInputStream fis;
+        try {
+            fis = mContext.openFileInput(filename);
+        } catch (FileNotFoundException e) {
+            Toast.makeText(mContext, "Could not find file", Toast.LENGTH_SHORT);
+            return new MarketItems();
+        }
+        InputStreamReader inputStreamReader =
+                new InputStreamReader(fis, StandardCharsets.UTF_8);
+
+        List<Item> itemList = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
+            String line = reader.readLine();
+            while (line != null) {
+                Item item = new Item(line);
+                itemList.add(item);
+
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            Toast.makeText(mContext, "Failed to read from file", Toast.LENGTH_SHORT);
+        }
+
+        Item[] items = new Item[itemList.size()];
+        for (int i=0; i<itemList.size(); i++) {
+            items[i] = itemList.get(i);
+        }
+
+        return new MarketItems(items);
     }
 
     /**
@@ -123,6 +154,33 @@ public class FileService {
                 bw.write(item.getName());
                 bw.write(':');
                 bw.write(shoppingList.isSelected(item.getName()) ? '1':'0');
+                bw.newLine();
+            }
+
+            bw.flush();
+        }
+        catch (IOException e) {
+            Toast.makeText(mContext, "Failed to write to file", Toast.LENGTH_SHORT);
+        }
+    }
+
+
+    /**
+     * Writes the specified items to the file.
+     * @param filename
+     * @param marketItems
+     */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void saveMarketItems(String filename, MarketItems marketItems) {
+        if (!createFileIfNotExists(filename)) {
+            return;
+        }
+
+        try (FileOutputStream fos = mContext.openFileOutput(filename, Context.MODE_PRIVATE)) {
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+            for (Item item: marketItems.toList()) {
+                bw.write(item.getName());
                 bw.newLine();
             }
 

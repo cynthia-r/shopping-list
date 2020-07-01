@@ -69,6 +69,8 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         FileService fileService = new FileService(activity);
         shoppingList = fileService.openFile(filename);
 
+        // TODO fix shopping list order which should be reordered if market Items order changed
+
         // set up the shopping list RecyclerView
         RecyclerView recyclerView = activity.findViewById(R.id.main_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));

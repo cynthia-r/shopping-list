@@ -24,7 +24,7 @@ public class MarketItems {
     private HashMap<String, Integer> sortMap = new HashMap<>();
 
     public MarketItems() {
-        initializeItems(marketItems);
+        //initializeItems(marketItems);
     }
 
     public MarketItems(Item[] itemArray) {
@@ -32,9 +32,9 @@ public class MarketItems {
     }
 
     private void initializeItems(Item[] itemArray) {
-        for (int i=0; i<marketItems.length; i++) {
-            sortMap.put(marketItems[i].getName(), i);
-            items.add(marketItems[i]);
+        for (int i=0; i<itemArray.length; i++) {
+            sortMap.put(itemArray[i].getName(), i);
+            items.add(itemArray[i]);
         }
     }
 
@@ -49,6 +49,16 @@ public class MarketItems {
 
     public int size() {
         return items.size();
+    }
+
+    public List<Item> toList() {
+        // Return a copy of the list
+        return new ArrayList<>(items);
+    }
+
+    public void add(Item item) {
+        sortMap.put(item.getName(), items.size());
+        items.add(item);
     }
 
     public void move(int from, int to) {

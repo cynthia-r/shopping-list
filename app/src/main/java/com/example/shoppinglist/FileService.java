@@ -7,6 +7,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 
 import com.example.shoppinglist.model.Item;
+import com.example.shoppinglist.model.MarketItems;
 import com.example.shoppinglist.model.ShoppingList;
 
 import java.io.BufferedReader;
@@ -66,6 +67,12 @@ public class FileService {
         }
 
         return shoppingList;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public MarketItems readMarketItems(String filename) {
+        // TODO read from disk
+        return new MarketItems();
     }
 
     /**

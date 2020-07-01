@@ -5,8 +5,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -52,6 +54,7 @@ public class AddFragment extends DialogFragment implements SearchView.OnQueryTex
         return fragment;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -64,10 +67,11 @@ public class AddFragment extends DialogFragment implements SearchView.OnQueryTex
         final AutoCompleteTextView autoTextView = viewInflated.findViewById(R.id.new_item);
 
         // Setup the market items in the autocomplete view
-        MarketItems marketItems = new MarketItems();
-        String[] itemNames = new String[marketItems.marketItems.length];
+        FileService fileService = new FileService(getContext());
+        MarketItems marketItems = fileService.readMarketItems("catalog");
+        String[] itemNames = new String[marketItems.size()];
         for (int i=0; i<itemNames.length; i++) {
-            itemNames[i] = marketItems.marketItems[i].getName();
+            itemNames[i] = marketItems.get(i).getName();
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>
                 (getContext(), android.R.layout.select_dialog_item, itemNames);

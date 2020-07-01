@@ -19,7 +19,6 @@ import java.util.Map;
 public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListViewAdapter.ShoppingListViewHolder> {
 
     private ShoppingList mData;
-    //private Map<String, Boolean> isSelectedMap = new HashMap<>();
     private LayoutInflater mInflater;
     private OnItemCheckListener mOnItemCheckListener;
 
@@ -27,9 +26,6 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
     ShoppingListViewAdapter(Context context, ShoppingList data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
-        /*for (String itemName : data.toList()) {
-            isSelectedMap.put(itemName, false);
-        }*/
     }
 
     // inflates the row layout from xml when needed
@@ -44,7 +40,6 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
     public void onBindViewHolder(final ShoppingListViewHolder holder, int position) {
         Item item = mData.get(position);
         holder.myTextView.setText(item.getName());
-        //holder.checkbox.setChecked(isSelectedMap.get(item.getName()));
         holder.checkbox.setChecked(mData.isSelected(item.getName()));
     }
 
@@ -52,6 +47,22 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
     @Override
     public int getItemCount() {
         return mData.size();
+    }
+
+    // convenience method for getting data at click position
+    public Item getItem(int id) {
+        return mData.get(id);
+    }
+
+    // allows check events to be caught
+    public void setItemCheckListener(OnItemCheckListener onItemCheckListener) {
+        this.mOnItemCheckListener = onItemCheckListener;
+    }
+
+    // parent activity will implement this method to respond to check events
+    public interface OnItemCheckListener {
+        void onItemCheck(int position);
+        void onItemUncheck(int position);
     }
 
     // stores and recycles views as they are scrolled off screen
@@ -79,33 +90,11 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
                 Item item = getItem(position);
                 if (checkbox.isChecked()) {
                     mOnItemCheckListener.onItemCheck(position);
-                    //isSelectedMap.put(item.getName(), true);
                 }
                 else {
                     mOnItemCheckListener.onItemUncheck(position);
-                    //isSelectedMap.put(item.getName(), false);
                 }
             }
         }
-    }
-
-    // convenience method for getting data at click position
-    Item getItem(int id) {
-        return mData.get(id);
-    }
-
-    /*public void setItemSelected(String itemName) {
-        isSelectedMap.put(itemName, true);
-    }*/
-
-    // allows check events to be caught
-    void setItemCheckListener(OnItemCheckListener onItemCheckListener) {
-        this.mOnItemCheckListener = onItemCheckListener;
-    }
-
-    // parent activity will implement this method to respond to check events
-    public interface OnItemCheckListener {
-        void onItemCheck(int position);
-        void onItemUncheck(int position);
     }
 }

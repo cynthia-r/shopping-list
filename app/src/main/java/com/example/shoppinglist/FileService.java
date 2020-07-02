@@ -32,9 +32,12 @@ public class FileService {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public ShoppingList openFile(String filename) {
+    public ShoppingList readShoppingList(String filename) {
+
+        MarketItems marketItems = this.readMarketItems("catalog");
+
         if (!createFileIfNotExists(filename)) {
-            return new ShoppingList();
+            return new ShoppingList(marketItems);
         }
 
         FileInputStream fis;
@@ -42,12 +45,12 @@ public class FileService {
             fis = mContext.openFileInput(filename);
         } catch (FileNotFoundException e) {
             Toast.makeText(mContext, "Could not find file", Toast.LENGTH_SHORT);
-            return new ShoppingList();
+            return new ShoppingList(marketItems);
         }
         InputStreamReader inputStreamReader =
                 new InputStreamReader(fis, StandardCharsets.UTF_8);
 
-        ShoppingList shoppingList = new ShoppingList();
+        ShoppingList shoppingList = new ShoppingList(marketItems);
         try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
             String line = reader.readLine();
             while (line != null) {
@@ -113,7 +116,7 @@ public class FileService {
      * @param items
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void writeToFile(String filename, List<Item> items) {
+    public void saveShoppingList(String filename, List<Item> items) {
         if (!createFileIfNotExists(filename)) {
             return;
         }
@@ -142,7 +145,7 @@ public class FileService {
      * @param shoppingList
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void writeToFile(String filename, ShoppingList shoppingList) {
+    public void saveShoppingList(String filename, ShoppingList shoppingList) {
         if (!createFileIfNotExists(filename)) {
             return;
         }

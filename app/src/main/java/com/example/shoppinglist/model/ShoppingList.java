@@ -13,8 +13,8 @@ public class ShoppingList {
     private SortedMap<String, Item> itemMap;
     private Set<String> selectedItems = new HashSet<>();
 
-    public ShoppingList() {
-        itemMap = new TreeMap<>(new MarketItemComparator());
+    public ShoppingList(MarketItems marketItems) {
+        itemMap = new TreeMap<>(new MarketItemComparator(marketItems));
     }
 
     public boolean contains(String itemName) {

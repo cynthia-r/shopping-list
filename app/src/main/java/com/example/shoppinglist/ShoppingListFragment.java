@@ -1,16 +1,11 @@
 package com.example.shoppinglist;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -67,7 +62,7 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
 
         String filename = "listFile";
         FileService fileService = new FileService(activity);
-        shoppingList = fileService.openFile(filename);
+        shoppingList = fileService.readShoppingList(filename);
 
         // TODO fix shopping list order which should be reordered if market Items order changed
 
@@ -97,7 +92,7 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
     public void onStop () {
         String filename = "listFile";
         FileService fileService = new FileService(getContext());
-        fileService.writeToFile(filename, shoppingList);
+        fileService.saveShoppingList(filename, shoppingList);
 
         super.onStop();
     }

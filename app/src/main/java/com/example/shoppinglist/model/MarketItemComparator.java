@@ -4,10 +4,10 @@ import java.util.Comparator;
 
 public class MarketItemComparator implements Comparator<String> {
 
-    private MarketItems marketItems = new MarketItems();
+    private MarketItems marketItems;
 
-    public MarketItemComparator() {
-
+    public MarketItemComparator(MarketItems items) {
+        marketItems = items;
     }
 
     @Override

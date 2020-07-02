@@ -65,7 +65,7 @@ public class ConfirmActivity extends AppCompatActivity {
     private void save(List<Item> items) {
         String filename = "listFile";
         FileService fileService = new FileService(this);
-        fileService.writeToFile(filename, items);
+        fileService.saveShoppingList(filename, items);
 
         Intent intent = new Intent();
         setResult(3, intent);

@@ -32,6 +32,43 @@ public class FileService {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public String getCurrentList(String filename) {
+        if (!createFileIfNotExists(filename)) {
+            return "";
+        }
+
+        String currentList = "";
+        InputStreamReader inputStreamReader = openFile(filename);
+        try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
+            String line = reader.readLine();
+            currentList = null == line ? "" : line;
+        } catch (IOException e) {
+            Toast.makeText(mContext, "Failed to read from file", Toast.LENGTH_SHORT);
+        }
+
+        closeFile(inputStreamReader);
+
+        return currentList;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void saveCurrentList(String filename, String currentList) {
+        if (!createFileIfNotExists(filename) || currentList.isEmpty()) {
+            return;
+        }
+
+        try (FileOutputStream fos = mContext.openFileOutput(filename, Context.MODE_PRIVATE)) {
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+            bw.write(currentList);
+            bw.newLine();
+            bw.flush();
+        }
+        catch (IOException e) {
+            Toast.makeText(mContext, "Failed to write to file", Toast.LENGTH_SHORT);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public ShoppingList readShoppingList(String filename) {
 
         MarketItems marketItems = this.readMarketItems("catalog");
@@ -40,15 +77,10 @@ public class FileService {
             return new ShoppingList(marketItems);
         }
 
-        FileInputStream fis;
-        try {
-            fis = mContext.openFileInput(filename);
-        } catch (FileNotFoundException e) {
-            Toast.makeText(mContext, "Could not find file", Toast.LENGTH_SHORT);
+        InputStreamReader inputStreamReader = openFile(filename);
+        if (inputStreamReader == null) {
             return new ShoppingList(marketItems);
         }
-        InputStreamReader inputStreamReader =
-                new InputStreamReader(fis, StandardCharsets.UTF_8);
 
         ShoppingList shoppingList = new ShoppingList(marketItems);
         try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
@@ -69,6 +101,8 @@ public class FileService {
             Toast.makeText(mContext, "Failed to read from file", Toast.LENGTH_SHORT);
         }
 
+        closeFile(inputStreamReader);
+
         return shoppingList;
     }
 
@@ -78,15 +112,7 @@ public class FileService {
             return new MarketItems();
         }
 
-        FileInputStream fis;
-        try {
-            fis = mContext.openFileInput(filename);
-        } catch (FileNotFoundException e) {
-            Toast.makeText(mContext, "Could not find file", Toast.LENGTH_SHORT);
-            return new MarketItems();
-        }
-        InputStreamReader inputStreamReader =
-                new InputStreamReader(fis, StandardCharsets.UTF_8);
+        InputStreamReader inputStreamReader = openFile(filename);
 
         List<Item> itemList = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
@@ -100,6 +126,8 @@ public class FileService {
         } catch (IOException e) {
             Toast.makeText(mContext, "Failed to read from file", Toast.LENGTH_SHORT);
         }
+
+        closeFile(inputStreamReader);
 
         Item[] items = new Item[itemList.size()];
         for (int i=0; i<itemList.size(); i++) {
@@ -207,5 +235,31 @@ public class FileService {
             }
         }
         return true;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private InputStreamReader openFile(String filename) {
+        FileInputStream fis;
+        try {
+            fis = mContext.openFileInput(filename);
+        } catch (FileNotFoundException e) {
+            Toast.makeText(mContext, "Could not find file", Toast.LENGTH_SHORT);
+            return null;
+        }
+        InputStreamReader inputStreamReader =
+                new InputStreamReader(fis, StandardCharsets.UTF_8);
+        return inputStreamReader;
+    }
+
+    private void closeFile(InputStreamReader inputStreamReader) {
+        if (inputStreamReader == null) {
+            Toast.makeText(mContext, "Input stream is null", Toast.LENGTH_SHORT);
+        }
+
+        try {
+            inputStreamReader.close();
+        } catch (IOException e) {
+            Toast.makeText(mContext, "Failed to close file", Toast.LENGTH_SHORT);
+        }
     }
 }

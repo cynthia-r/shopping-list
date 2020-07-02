@@ -48,6 +48,20 @@ public class ShoppingList {
         return itemMap.size();
     }
 
+    public void clear() {
+        itemMap.clear();
+        selectedItems.clear();
+    }
+
+    public void addAll(ShoppingList shoppingList) {
+        for (Item item : shoppingList.toList(false)) {
+            this.add(item);
+            if (shoppingList.isSelected(item.getName())) {
+                selectedItems.add(item.getName());
+            }
+        }
+    }
+
     public boolean isSelected(String itemName) {
         return selectedItems.contains(itemName);
     }

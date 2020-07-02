@@ -13,7 +13,11 @@ import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.shoppinglist.model.Item;
 import com.example.shoppinglist.model.ShoppingList;
@@ -27,10 +31,11 @@ import java.util.ArrayList;
  * Use the {@link ShoppingListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ShoppingListFragment extends Fragment implements ShoppingListViewAdapter.OnItemCheckListener, AddFragment.AddItemDialogListener {
+public class ShoppingListFragment extends Fragment implements ShoppingListViewAdapter.OnItemCheckListener, AddFragment.AddItemDialogListener, AdapterView.OnItemSelectedListener {
 
     private ShoppingListViewAdapter adapter;
     private ShoppingList shoppingList;
+    private String currentList;
 
     public ShoppingListFragment() {
         // Required empty public constructor
@@ -60,11 +65,15 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
 
         MainActivity activity = (MainActivity)getActivity();
 
-        String filename = "listFile";
         FileService fileService = new FileService(activity);
-        shoppingList = fileService.readShoppingList(filename);
 
-        // TODO fix shopping list order which should be reordered if market Items order changed
+        currentList = fileService.getCurrentList("currentList");
+        if (currentList.isEmpty()) {
+            currentList = "Mardi";
+        }
+
+        String filename = currentList + "-listFile";
+        shoppingList = fileService.readShoppingList(filename);
 
         // set up the shopping list RecyclerView
         RecyclerView recyclerView = activity.findViewById(R.id.main_list);
@@ -72,6 +81,14 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         adapter = new ShoppingListViewAdapter(activity, shoppingList);
         adapter.setItemCheckListener(this);
         recyclerView.setAdapter(adapter);
+
+        // Setup the spinner
+        Spinner spinner = activity.findViewById(R.id.list_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity,
+                R.array.lists_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
 
         // Set up the Add button
         FloatingActionButton addButton = activity.findViewById(R.id.add);
@@ -90,9 +107,12 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onStop () {
-        String filename = "listFile";
+        String filename = currentList + "-listFile";;
         FileService fileService = new FileService(getContext());
         fileService.saveShoppingList(filename, shoppingList);
+
+        // TODO fix bug current list not saved
+        fileService.saveCurrentList("currentList", currentList);
 
         super.onStop();
     }
@@ -134,6 +154,37 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
             shoppingList.clearUnselected();
             adapter.notifyDataSetChanged();
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        String listName = (String) adapterView.getItemAtPosition(i);
+
+        if (listName.equals(currentList)) {
+            return;
+        }
+
+        // Save current list
+        FileService fileService = new FileService(getContext());
+        String filename = currentList + "-listFile";
+        fileService.saveShoppingList(filename, shoppingList);
+
+        // Switch to the other list
+        currentList = listName;
+
+        filename = currentList + "-listFile";
+        ShoppingList newShoppingList = fileService.readShoppingList(filename);
+
+        shoppingList.clear();
+        shoppingList.addAll(newShoppingList);
+
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        // No-op
     }
 
     private void openConfirmActivity(){

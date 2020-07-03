@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.shoppinglist.model.Item;
+import com.example.shoppinglist.model.ShoppingListItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +33,12 @@ public class ConfirmActivity extends AppCompatActivity {
         // Retrieve the list
         Bundle bundle = getIntent().getBundleExtra("shoppingList");
         ArrayList<Parcelable> parcelableList = bundle.getParcelableArrayList("data");
-        final List<Item> itemList = new ArrayList<>();
+        final List<ShoppingListItem> itemList = new ArrayList<>();
         for (Parcelable parcelable : parcelableList) {
-            itemList.add((Item)parcelable);
+            itemList.add((ShoppingListItem)parcelable);
         }
+
+        // TODO display quantities
 
         // Retrieve the list name
         currentList = bundle.getString("currentList");
@@ -68,7 +71,7 @@ public class ConfirmActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void save(List<Item> items) {
+    private void save(List<ShoppingListItem> items) {
         String filename = currentList + "-listFile";
         FileService fileService = new FileService(this);
         fileService.saveShoppingList(filename, items);
@@ -78,11 +81,11 @@ public class ConfirmActivity extends AppCompatActivity {
         finish();
     }
 
-    private void sendEmail(List<Item> items) {
+    private void sendEmail(List<ShoppingListItem> items) {
 
         StringBuilder sb = new StringBuilder();
-        for (Item item : items) {
-            sb.append(item.getName());
+        for (ShoppingListItem item : items) {
+            sb.append(item.getItemName() + " " + item.getQuantity());
             sb.append("\n");
         }
 

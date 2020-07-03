@@ -10,6 +10,7 @@
         android:id="@+id/catalog_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scrollbars="vertical"
         tools:layout_editor_absoluteX="0dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -22,14 +23,5 @@
         android:src="@android:drawable/ic_input_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <!--<Button
-        android:id="@+id/save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Done"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="0dp" />-->
-    <!-- Add checked icon in button -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

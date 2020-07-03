@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.SearchView;
 
 import com.example.shoppinglist.model.MarketItems;
@@ -78,11 +79,17 @@ public class AddFragment extends DialogFragment implements SearchView.OnQueryTex
         autoTextView.setThreshold(1); // will start working from the first character
         autoTextView.setAdapter(adapter);
 
+        final NumberPicker numberPickerView = viewInflated.findViewById(R.id.quantity);
+        numberPickerView.setMinValue(1);
+        numberPickerView.setMaxValue(10);
+        numberPickerView.setValue(1);
+        numberPickerView.setWrapSelectorWheel(false);
+
         alertDialogBuilder.setPositiveButton("OK",  new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // On success
-                mAddItemDialogListener.onItemAdd(autoTextView.getText().toString());
+                mAddItemDialogListener.onItemAdd(autoTextView.getText().toString(), numberPickerView.getValue());
             }
         });
         alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -109,7 +116,7 @@ public class AddFragment extends DialogFragment implements SearchView.OnQueryTex
 
     @Override
     public boolean onQueryTextSubmit(String s) {
-        mAddItemDialogListener.onItemAdd(s);
+        mAddItemDialogListener.onItemAdd(s, 1);
         return false;
     }
 
@@ -123,6 +130,6 @@ public class AddFragment extends DialogFragment implements SearchView.OnQueryTex
     }
 
     public interface AddItemDialogListener {
-        void onItemAdd(String inputText);
+        void onItemAdd(String inputText, int quantity);
     }
 }

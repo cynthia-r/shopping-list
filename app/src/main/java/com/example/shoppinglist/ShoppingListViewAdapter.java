@@ -5,22 +5,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.shoppinglist.model.Item;
 import com.example.shoppinglist.model.ShoppingList;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.example.shoppinglist.model.ShoppingListItem;
 
 public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListViewAdapter.ShoppingListViewHolder> {
 
     private ShoppingList mData;
     private LayoutInflater mInflater;
     private OnItemCheckListener mOnItemCheckListener;
+    private OnLongClickListener mOnLongClickListener;
 
     // data is passed into the constructor
     ShoppingListViewAdapter(Context context, ShoppingList data) {
@@ -38,9 +35,13 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(final ShoppingListViewHolder holder, int position) {
-        Item item = mData.get(position);
-        holder.myTextView.setText(item.getName());
-        holder.checkbox.setChecked(mData.isSelected(item.getName()));
+        ShoppingListItem item = mData.get(position);
+        holder.itemNameTextView.setText(item.getItemName());
+        int quantity = item.getQuantity();
+        if (quantity > 1) {
+            holder.quantityTextView.setText(" x" + quantity);
+        }
+        holder.checkbox.setChecked(item.isSelected());
     }
 
     // total number of rows
@@ -50,7 +51,7 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
     }
 
     // convenience method for getting data at click position
-    public Item getItem(int id) {
+    public ShoppingListItem getItem(int id) {
         return mData.get(id);
     }
 
@@ -59,24 +60,36 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
         this.mOnItemCheckListener = onItemCheckListener;
     }
 
+    // allows check events to be caught
+    public void setLongClickListener(OnLongClickListener onLongClickListener) {
+        this.mOnLongClickListener = onLongClickListener;
+    }
+
     // parent activity will implement this method to respond to check events
     public interface OnItemCheckListener {
         void onItemCheck(int position);
         void onItemUncheck(int position);
     }
 
+    public interface OnLongClickListener {
+        void onLongClick(ShoppingListItem item);
+    }
+
     // stores and recycles views as they are scrolled off screen
-    public class ShoppingListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ShoppingListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         CheckBox checkbox;
-        TextView myTextView;
+        TextView itemNameTextView;
+        TextView quantityTextView;
 
         ShoppingListViewHolder(View itemView) {
             super(itemView);
-            myTextView = itemView.findViewById(R.id.item);
+            itemNameTextView = itemView.findViewById(R.id.item);
+            quantityTextView = itemView.findViewById(R.id.quantity);
 
             // Bind checkbox changes to onclick events
             // So that the user can click anywhere on the item to select/un-select it
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
             checkbox = itemView.findViewById(R.id.checkbox);
             checkbox.setClickable(false);
         }
@@ -87,7 +100,6 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
             if (mOnItemCheckListener != null) {
                 checkbox.setChecked(!checkbox.isChecked());
                 int position = getAdapterPosition();
-                Item item = getItem(position);
                 if (checkbox.isChecked()) {
                     mOnItemCheckListener.onItemCheck(position);
                 }
@@ -95,6 +107,14 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
                     mOnItemCheckListener.onItemUncheck(position);
                 }
             }
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            int position = getAdapterPosition();
+            ShoppingListItem item = getItem(position);
+            mOnLongClickListener.onLongClick(item);
+            return true;
         }
     }
 }

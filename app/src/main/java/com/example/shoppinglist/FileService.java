@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi;
 import com.example.shoppinglist.model.Item;
 import com.example.shoppinglist.model.MarketItems;
 import com.example.shoppinglist.model.ShoppingList;
+import com.example.shoppinglist.model.ShoppingListItem;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -90,11 +91,10 @@ public class FileService {
                 String itemName = tokenizer.nextToken();
                 int isSelected = tokenizer.hasMoreTokens()
                         ? Integer.parseInt(tokenizer.nextToken()) : 0;
+                int quantity = tokenizer.hasMoreTokens()
+                        ? Integer.parseInt(tokenizer.nextToken()) : -1;
                 Item item = new Item(itemName);
-                shoppingList.add(item);
-                if (isSelected > 0) {
-                    shoppingList.select(itemName);
-                }
+                shoppingList.add(item, quantity, isSelected > 0);
                 line = reader.readLine();
             }
         } catch (IOException e) {
@@ -144,7 +144,7 @@ public class FileService {
      * @param items
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void saveShoppingList(String filename, List<Item> items) {
+    public void saveShoppingList(String filename, List<ShoppingListItem> items) {
         if (!createFileIfNotExists(filename)) {
             return;
         }
@@ -152,10 +152,12 @@ public class FileService {
         try (FileOutputStream fos = mContext.openFileOutput(filename, Context.MODE_PRIVATE)) {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
-            for (Item item: items) {
-                bw.write(item.getName());
+            for (ShoppingListItem item: items) {
+                bw.write(item.getItemName());
                 bw.write(':');
                 bw.write('0');
+                bw.write(':');
+                bw.write(Integer.toString(item.getQuantity()));
                 bw.newLine();
             }
 
@@ -181,10 +183,12 @@ public class FileService {
         try (FileOutputStream fos = mContext.openFileOutput(filename, Context.MODE_PRIVATE)) {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
-            for (Item item: shoppingList.toList(false)) {
-                bw.write(item.getName());
+            for (ShoppingListItem item: shoppingList.toList(false)) {
+                bw.write(item.getItemName());
                 bw.write(':');
-                bw.write(shoppingList.isSelected(item.getName()) ? '1':'0');
+                bw.write(item.isSelected() ? '1':'0');
+                bw.write(':');
+                bw.write(Integer.toString(item.getQuantity()));
                 bw.newLine();
             }
 

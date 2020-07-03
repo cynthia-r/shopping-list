@@ -9,15 +9,16 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.shoppinglist.model.Item;
+import com.example.shoppinglist.model.ShoppingListItem;
 
 import java.util.List;
 
 public class ConfirmListViewAdapter extends RecyclerView.Adapter<ConfirmListViewAdapter.ConfirmListViewHolder> {
-    private List<Item> mData;
+    private List<ShoppingListItem> mData;
     private LayoutInflater mInflater;
 
     // data is passed into the constructor
-    public ConfirmListViewAdapter(Context context, List<Item> data) {
+    public ConfirmListViewAdapter(Context context, List<ShoppingListItem> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
@@ -32,8 +33,8 @@ public class ConfirmListViewAdapter extends RecyclerView.Adapter<ConfirmListView
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(final ConfirmListViewAdapter.ConfirmListViewHolder holder, int position) {
-        Item item = mData.get(position);
-        holder.myTextView.setText(item.getName());
+        ShoppingListItem item = mData.get(position);
+        holder.myTextView.setText(item.getItemName());
     }
 
     // total number of rows

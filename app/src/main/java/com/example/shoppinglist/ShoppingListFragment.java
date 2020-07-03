@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.shoppinglist.model.Item;
 import com.example.shoppinglist.model.ShoppingList;
+import com.example.shoppinglist.model.ShoppingListItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -33,7 +34,8 @@ import java.util.List;
  * Use the {@link ShoppingListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ShoppingListFragment extends Fragment implements ShoppingListViewAdapter.OnItemCheckListener, AddFragment.AddItemDialogListener, AdapterView.OnItemSelectedListener {
+public class ShoppingListFragment extends Fragment implements ShoppingListViewAdapter.OnItemCheckListener,
+        AddFragment.AddItemDialogListener, AdapterView.OnItemSelectedListener, EditItemFragment.EditItemDialogListener {
 
     private ShoppingListViewAdapter adapter;
     private ShoppingList shoppingList;
@@ -84,6 +86,7 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         adapter = new ShoppingListViewAdapter(activity, shoppingList);
         adapter.setItemCheckListener(this);
+        adapter.setLongClickListener(activity);
         recyclerView.setAdapter(adapter);
 
         // Setup the spinner
@@ -116,7 +119,6 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         FileService fileService = new FileService(getContext());
         fileService.saveShoppingList(filename, shoppingList);
 
-        // TODO fix bug current list not saved
         fileService.saveCurrentList("currentList", currentList);
 
         super.onStop();
@@ -124,27 +126,38 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
 
     @Override
     public void onItemCheck(int position) {
-        Item item = adapter.getItem(position);
-        shoppingList.select(item.getName());
+        ShoppingListItem item = adapter.getItem(position);
+        shoppingList.select(item.getItemName());
     }
 
     @Override
     public void onItemUncheck(int position) {
-        Item item = adapter.getItem(position);
-        shoppingList.deselect(item.getName());
+        ShoppingListItem item = adapter.getItem(position);
+        shoppingList.deselect(item.getItemName());
     }
 
     @Override
-    public void onItemAdd(String inputText) {
+    public void onItemAdd(String inputText, int quantity) {
 
         if (inputText.isEmpty() || shoppingList.contains(inputText)) {
             return;
         }
 
         Item item = new Item(inputText);
-        shoppingList.add(item);
-        shoppingList.select(item.getName());
+        shoppingList.add(item, quantity, true);
 
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemEdit(String itemName, int quantity) {
+        shoppingList.update(itemName, quantity);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemDelete(String itemName) {
+        shoppingList.remove(itemName);
         adapter.notifyDataSetChanged();
     }
 

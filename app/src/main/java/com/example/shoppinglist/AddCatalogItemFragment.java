@@ -48,7 +48,7 @@ public class AddCatalogItemFragment extends DialogFragment {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setTitle("Add item");
 
-        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add, (ViewGroup) getView(), false);
+        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add_catalog_item, (ViewGroup) getView(), false);
         alertDialogBuilder.setView(viewInflated);
 
         // Locate the EditText in listview_main.xml

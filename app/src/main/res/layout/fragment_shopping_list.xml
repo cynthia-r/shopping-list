@@ -17,20 +17,22 @@
                     android:id="@+id/list_spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:layout_margin="10dp"
-                    android:textAlignment="viewEnd"
                     android:gravity="end"
-                    tools:layout_editor_absoluteX="0dp"
-                    android:layout_alignParentRight="true" />
+                    android:textAlignment="viewEnd"
+                    tools:layout_editor_absoluteX="0dp" />
 
         </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/main_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:layout_editor_absoluteX="0dp"
-            app:layout_constraintTop_toBottomOf="@id/top_bar"/>
+            android:layout_height="0dp"
+            android:layout_weight=".70"
+            app:layout_constraintBottom_toTopOf="@+id/save"
+            app:layout_constraintTop_toBottomOf="@+id/top_bar"
+            tools:layout_editor_absoluteX="-8dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add"

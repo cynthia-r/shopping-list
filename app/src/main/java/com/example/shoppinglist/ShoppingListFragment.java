@@ -24,6 +24,8 @@ import com.example.shoppinglist.model.ShoppingList;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -67,9 +69,11 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
 
         FileService fileService = new FileService(activity);
 
+        List<String> lists = Arrays.asList(getResources().getStringArray(R.array.lists_array));
+
         currentList = fileService.getCurrentList("currentList");
         if (currentList.isEmpty()) {
-            currentList = "Mardi";
+            currentList = lists.get(0);
         }
 
         String filename = currentList + "-listFile";
@@ -89,6 +93,7 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+        spinner.setSelection(lists.indexOf(currentList));
 
         // Set up the Add button
         FloatingActionButton addButton = activity.findViewById(R.id.add);
@@ -107,7 +112,7 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onStop () {
-        String filename = currentList + "-listFile";;
+        String filename = currentList + "-listFile";
         FileService fileService = new FileService(getContext());
         fileService.saveShoppingList(filename, shoppingList);
 
@@ -193,6 +198,7 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         ArrayList<Parcelable> parcelableList = new ArrayList<>();
         parcelableList.addAll(shoppingList.toList(true));
         bundle.putParcelableArrayList("data", parcelableList);
+        bundle.putString("currentList", currentList);
         intent.putExtra("shoppingList", bundle);
         startActivityForResult(intent, 2);
     }

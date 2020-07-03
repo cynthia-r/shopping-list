@@ -21,18 +21,24 @@ import java.util.List;
 public class ConfirmActivity extends AppCompatActivity {
 
     private ConfirmListViewAdapter adapter;
+    private String currentList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
 
+        // Retrieve the list
         Bundle bundle = getIntent().getBundleExtra("shoppingList");
         ArrayList<Parcelable> parcelableList = bundle.getParcelableArrayList("data");
         final List<Item> itemList = new ArrayList<>();
         for (Parcelable parcelable : parcelableList) {
             itemList.add((Item)parcelable);
         }
+
+        // Retrieve the list name
+        currentList = bundle.getString("currentList");
 
         // set up the confirmed list RecyclerView
         RecyclerView recyclerView = findViewById(R.id.main_list);
@@ -63,7 +69,7 @@ public class ConfirmActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void save(List<Item> items) {
-        String filename = "listFile";
+        String filename = currentList + "-listFile";
         FileService fileService = new FileService(this);
         fileService.saveShoppingList(filename, items);
 

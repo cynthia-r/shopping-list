@@ -7,24 +7,10 @@ import java.util.List;
 public class MarketItems {
     private List<Item> items = new ArrayList<>();
 
-    // TODO move to file
-    private Item[] marketItems = new Item[] {
-            new Item("Barres"),
-            new Item("Cereales cuicui"),
-            new Item("Echalotes"),
-            new Item("Salade cuicui"),
-            new Item("Eau gallon"),
-            new Item("Oeufs"),
-            new Item("Yaourt doudou"),
-            new Item("Petits pains"),
-            new Item("Fromage"),
-            new Item("Lardons")
-    };
-
     private HashMap<String, Integer> sortMap = new HashMap<>();
 
     public MarketItems() {
-        //initializeItems(marketItems);
+
     }
 
     public MarketItems(Item[] itemArray) {

@@ -5,15 +5,12 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.shoppinglist.model.Item;
-import com.example.shoppinglist.model.MarketItemComparator;
 import com.example.shoppinglist.model.MarketItems;
-import com.example.shoppinglist.model.ShoppingList;
 
 public class CatalogListViewAdapter extends RecyclerView.Adapter<CatalogListViewAdapter.CatalogListViewHolder> {
     private MarketItems mData;

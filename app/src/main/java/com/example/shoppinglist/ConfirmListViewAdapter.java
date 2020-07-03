@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.shoppinglist.model.Item;
 import com.example.shoppinglist.model.ShoppingListItem;
 
 import java.util.List;
@@ -34,7 +33,11 @@ public class ConfirmListViewAdapter extends RecyclerView.Adapter<ConfirmListView
     @Override
     public void onBindViewHolder(final ConfirmListViewAdapter.ConfirmListViewHolder holder, int position) {
         ShoppingListItem item = mData.get(position);
-        holder.myTextView.setText(item.getItemName());
+        holder.itemTextView.setText(item.getItemName());
+        int quantity = item.getQuantity();
+        if (quantity > 0) {
+            holder.quantityTextView.setText(" x" + quantity);
+        }
     }
 
     // total number of rows
@@ -45,11 +48,13 @@ public class ConfirmListViewAdapter extends RecyclerView.Adapter<ConfirmListView
 
     // stores and recycles views as they are scrolled off screen
     public class ConfirmListViewHolder extends RecyclerView.ViewHolder {
-        TextView myTextView;
+        TextView itemTextView;
+        TextView quantityTextView;
 
         public ConfirmListViewHolder(View itemView) {
             super(itemView);
-            myTextView = itemView.findViewById(R.id.item);
+            itemTextView = itemView.findViewById(R.id.item);
+            quantityTextView = itemView.findViewById(R.id.quantity);
         }
     }
 }

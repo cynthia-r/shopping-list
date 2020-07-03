@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         drawerLayout.closeDrawers();
     }
 
-    // TODO find a less convoluted solution to this
+    // TODO find a less convoluted solution to this and same for the one below
     @Override
     public void onClick(View view) {
         FragmentManager fm = getSupportFragmentManager();
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String tag = fragment.getTag();
         if (tag == "ShoppingList") {
             ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragment;
-            EditItemFragment alertDialog = EditItemFragment.newInstance(item.getItemName());
+            EditItemFragment alertDialog = EditItemFragment.newInstance(item.getItemName(), item.getQuantity());
             alertDialog.setEditItemDialogListener(shoppingListFragment);
             alertDialog.show(fm, "fragment_alert");
         }

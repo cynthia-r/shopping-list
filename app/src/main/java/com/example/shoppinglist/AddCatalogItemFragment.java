@@ -12,12 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-
-import com.example.shoppinglist.model.MarketItems;
-
 
 /**
  * A simple {@link Fragment} subclass.

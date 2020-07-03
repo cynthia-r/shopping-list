@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.shoppinglist.model.Item;
 import com.example.shoppinglist.model.ShoppingListItem;
 
 import java.util.ArrayList;
@@ -37,8 +36,6 @@ public class ConfirmActivity extends AppCompatActivity {
         for (Parcelable parcelable : parcelableList) {
             itemList.add((ShoppingListItem)parcelable);
         }
-
-        // TODO display quantities
 
         // Retrieve the list name
         currentList = bundle.getString("currentList");
@@ -85,7 +82,11 @@ public class ConfirmActivity extends AppCompatActivity {
 
         StringBuilder sb = new StringBuilder();
         for (ShoppingListItem item : items) {
-            sb.append(item.getItemName() + " " + item.getQuantity());
+            sb.append(item.getItemName());
+            int quantity = item.getQuantity();
+            if (quantity > 0) {
+                sb.append(" x" + quantity);
+            }
             sb.append("\n");
         }
 

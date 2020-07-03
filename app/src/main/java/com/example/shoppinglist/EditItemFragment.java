@@ -11,12 +11,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.NumberPicker;
-import android.widget.TextView;
-
-import com.example.shoppinglist.model.MarketItems;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,7 +23,7 @@ public class EditItemFragment extends DialogFragment {
     private static final String ARG_PARAM1 = "param1";
 
     private String mParam1;
-    private String mParam2; // TODO pass quantity and set it as default value
+    private int mParam2;
     private EditItemDialogListener mEditItemDialogListener;
 
     public EditItemFragment() {
@@ -38,13 +34,14 @@ public class EditItemFragment extends DialogFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
+     * @param param1 The item name.
+     * @param param2 The quantity.
      * @return A new instance of fragment EditItemFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static EditItemFragment newInstance(String param1) {
+    public static EditItemFragment newInstance(String param1, int param2) {
         EditItemFragment fragment = new EditItemFragment();
         fragment.setItemName(param1);
+        fragment.setQuantity(param2);
         return fragment;
     }
 
@@ -59,11 +56,12 @@ public class EditItemFragment extends DialogFragment {
         AutoCompleteTextView autoTextView = viewInflated.findViewById(R.id.new_item);
         autoTextView.setText(mParam1);
         autoTextView.setEnabled(false);
+        autoTextView.setAlpha(0.5f);
 
         final NumberPicker numberPickerView = viewInflated.findViewById(R.id.quantity);
         numberPickerView.setMinValue(1);
         numberPickerView.setMaxValue(10);
-        numberPickerView.setValue(1);
+        numberPickerView.setValue(mParam2);
         numberPickerView.setWrapSelectorWheel(false);
 
         alertDialogBuilder.setPositiveButton("OK",  new DialogInterface.OnClickListener() {
@@ -73,7 +71,7 @@ public class EditItemFragment extends DialogFragment {
                 mEditItemDialogListener.onItemEdit(mParam1, numberPickerView.getValue());
             }
         });
-        alertDialogBuilder.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNeutralButton("Delete Item", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mEditItemDialogListener.onItemDelete(mParam1);
@@ -109,5 +107,9 @@ public class EditItemFragment extends DialogFragment {
 
     private void setItemName(String itemName) {
         mParam1 = itemName;
+    }
+
+    private void setQuantity(int quantity) {
+        mParam2 = quantity;
     }
 }

@@ -11,8 +11,6 @@ import java.util.TreeMap;
 
 public class ShoppingList {
     private SortedMap<String, ShoppingListItem> itemMap;
-    //private Set<String> selectedItems = new HashSet<>();
-    //private HashMap<String, Integer> itemQuantities = new HashMap<>();
 
     public ShoppingList(MarketItems marketItems) {
         itemMap = new TreeMap<>(new MarketItemComparator(marketItems));
@@ -59,26 +57,13 @@ public class ShoppingList {
 
     public void clear() {
         itemMap.clear();
-        //selectedItems.clear();
     }
 
     public void addAll(ShoppingList shoppingList) {
         for (ShoppingListItem item : shoppingList.toList(false)) {
-            /*this.add(item);
-            if (shoppingList.isSelected(item.getName())) {
-                selectedItems.add(item.getName());
-            }*/
             itemMap.put(item.getItem().getName(), item);
         }
     }
-
-    /*public boolean isSelected(String itemName) {
-        return selectedItems.contains(itemName);
-    }
-
-    public int getQuantity(String itemName) {
-        return itemQuantities.get(itemName);
-    }*/
 
     public List<ShoppingListItem> toList(boolean selectedOnly) {
         List<ShoppingListItem> items = new ArrayList<>();
@@ -108,8 +93,5 @@ public class ShoppingList {
         for (String i : keysToRemove) {
             itemMap.remove(i);
         }
-
-        // TODO clear all selected items as well
-        //selectedItems.clear();
     }
 }

@@ -24,6 +24,10 @@ public class ShoppingList {
         itemMap.put(item.getName(), new ShoppingListItem(item, quantity, isSelected));
     }
 
+    public void add(ShoppingListItem item) {
+        itemMap.put(item.getItemName(), item);
+    }
+
     public void update(String itemName, int quantity) {
         itemMap.get(itemName).setQuantity(quantity);
     }

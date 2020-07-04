@@ -107,7 +107,7 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openConfirmActivity();
+                openSuggestedItemsActivity();
             }
         });
     }
@@ -169,8 +169,7 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         super.onActivityResult(requestCode, resultCode, data);
 
         // check if the request code is same as what is passed  here it is 2
-        if (requestCode == 2 && resultCode == 3)
-        {
+        if (requestCode == 2 && resultCode == 3) {
             shoppingList.clearUnselected();
             adapter.notifyDataSetChanged();
         }
@@ -207,14 +206,16 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         // No-op
     }
 
-    private void openConfirmActivity(){
-        Intent intent = new Intent(getContext(), ConfirmActivity.class);
+    private void openSuggestedItemsActivity(){
+        Intent intent = new Intent(getContext(), SuggestedItemsActivity.class);
+
         Bundle bundle = new Bundle();
         ArrayList<Parcelable> parcelableList = new ArrayList<>();
         parcelableList.addAll(shoppingList.toList(true));
         bundle.putParcelableArrayList("data", parcelableList);
         bundle.putString("currentList", currentList);
         intent.putExtra("shoppingList", bundle);
+
         startActivityForResult(intent, 2);
     }
 }

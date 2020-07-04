@@ -93,6 +93,7 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
             // So that the user can click anywhere on the item to select/un-select it
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
+            itemView.setOnTouchListener(new OnItemTouchListener());
             checkbox = itemView.findViewById(R.id.checkbox);
             checkbox.setClickable(false);
         }

@@ -74,7 +74,7 @@ public class CatalogListViewAdapter extends RecyclerView.Adapter<CatalogListView
             textView = itemView.findViewById(R.id.item);
             handleView = itemView.findViewById(R.id.handle);
             itemView.setOnLongClickListener(this);
-            itemView.setOnTouchListener(new OnCatalogItemTouchListener());
+            itemView.setOnTouchListener(new OnItemTouchListener());
             handleView.setOnTouchListener(this);
         }
 
@@ -118,34 +118,5 @@ public class CatalogListViewAdapter extends RecyclerView.Adapter<CatalogListView
 
     public interface OnStartDragListener {
         void onStartDrag(RecyclerView.ViewHolder viewHolder);
-    }
-
-    public class OnCatalogItemTouchListener implements View.OnTouchListener {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-
-            TextView textView = view.findViewById(R.id.item);
-
-            int motionAction = MotionEventCompat.getActionMasked(motionEvent);
-
-            if (motionAction ==
-                    MotionEvent.ACTION_DOWN) {
-                textView.setAlpha(0.5f);
-                view.setBackgroundColor(Color.LTGRAY);
-            }
-            /*switch (MotionEventCompat.getActionMasked(motionEvent)) {
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_SCROLL:
-                case MotionEvent.ACTION_MOVE:*/
-            if (motionAction == MotionEvent.ACTION_UP || motionAction == MotionEvent.ACTION_CANCEL) {
-                    textView.setAlpha(1.0f);
-                    textView.setAlpha(1.0f);
-                    view.setBackgroundColor(0);
-                    /*break;
-                default:break;*/
-            }
-
-            return false;
-        }
     }
 }

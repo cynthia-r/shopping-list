@@ -23,7 +23,6 @@ public class ConfirmActivity extends AppCompatActivity {
     private ConfirmListViewAdapter adapter;
     private String currentList;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -84,7 +84,7 @@ public class ConfirmActivity extends AppCompatActivity {
         for (ShoppingListItem item : items) {
             sb.append(item.getItemName());
             int quantity = item.getQuantity();
-            if (quantity > 0) {
+            if (quantity > 1) {
                 sb.append(" x" + quantity);
             }
             sb.append("\n");

@@ -35,7 +35,7 @@ public class ConfirmListViewAdapter extends RecyclerView.Adapter<ConfirmListView
         ShoppingListItem item = mData.get(position);
         holder.itemTextView.setText(item.getItemName());
         int quantity = item.getQuantity();
-        if (quantity > 0) {
+        if (quantity > 1) {
             holder.quantityTextView.setText(" x" + quantity);
         }
     }

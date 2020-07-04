@@ -69,11 +69,12 @@ public class CatalogListViewAdapter extends RecyclerView.Adapter<CatalogListView
         TextView textView;
         ImageView handleView;
 
-        CatalogListViewHolder(View itemView) {
+        CatalogListViewHolder(final View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.item);
             handleView = itemView.findViewById(R.id.handle);
-            textView.setOnLongClickListener(this);
+            itemView.setOnLongClickListener(this);
+            itemView.setOnTouchListener(new OnCatalogItemTouchListener());
             handleView.setOnTouchListener(this);
         }
 
@@ -92,11 +93,17 @@ public class CatalogListViewAdapter extends RecyclerView.Adapter<CatalogListView
             int position = getAdapterPosition();
             Item item = get(position);
             mOnLongClickListener.onLongClick(item, position);
+
+            textView.setAlpha(1.0f);
+            itemView.setBackgroundColor(0);
             return true;
         }
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
+            textView.setAlpha(0.5f);
+            itemView.setBackgroundColor(Color.LTGRAY);
+
             if (MotionEventCompat.getActionMasked(event) ==
                     MotionEvent.ACTION_DOWN) {
                 mOnDragStartListener.onStartDrag(this);
@@ -110,12 +117,35 @@ public class CatalogListViewAdapter extends RecyclerView.Adapter<CatalogListView
     }
 
     public interface OnStartDragListener {
-
-        /**
-         * Called when a view is requesting a start of a drag.
-         *
-         * @param viewHolder The holder of the view to drag.
-         */
         void onStartDrag(RecyclerView.ViewHolder viewHolder);
+    }
+
+    public class OnCatalogItemTouchListener implements View.OnTouchListener {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+
+            TextView textView = view.findViewById(R.id.item);
+
+            int motionAction = MotionEventCompat.getActionMasked(motionEvent);
+
+            if (motionAction ==
+                    MotionEvent.ACTION_DOWN) {
+                textView.setAlpha(0.5f);
+                view.setBackgroundColor(Color.LTGRAY);
+            }
+            /*switch (MotionEventCompat.getActionMasked(motionEvent)) {
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_SCROLL:
+                case MotionEvent.ACTION_MOVE:*/
+            if (motionAction == MotionEvent.ACTION_UP || motionAction == MotionEvent.ACTION_CANCEL) {
+                    textView.setAlpha(1.0f);
+                    textView.setAlpha(1.0f);
+                    view.setBackgroundColor(0);
+                    /*break;
+                default:break;*/
+            }
+
+            return false;
+        }
     }
 }

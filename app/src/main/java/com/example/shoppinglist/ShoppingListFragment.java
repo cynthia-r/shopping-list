@@ -37,6 +37,7 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         AddFragment.AddItemDialogListener, AdapterView.OnItemSelectedListener, EditItemFragment.EditItemDialogListener {
 
     private ShoppingListViewAdapter adapter;
+    private RecyclerView recyclerView;
     private ShoppingList shoppingList;
     private String currentList;
 
@@ -81,7 +82,7 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         shoppingList = fileService.readShoppingList(filename);
 
         // set up the shopping list RecyclerView
-        RecyclerView recyclerView = activity.findViewById(R.id.main_list);
+        recyclerView = activity.findViewById(R.id.main_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         adapter = new ShoppingListViewAdapter(activity, shoppingList);
         adapter.setItemCheckListener(this);
@@ -136,16 +137,18 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
     }
 
     @Override
-    public void onItemAdd(String inputText, int quantity) {
+    public void onItemAdd(String itemName, int quantity) {
 
-        if (inputText.isEmpty() || shoppingList.contains(inputText)) {
+        if (itemName.isEmpty() || shoppingList.contains(itemName)) {
             return;
         }
 
-        Item item = new Item(inputText);
+        Item item = new Item(itemName);
         shoppingList.add(item, quantity, true);
 
         adapter.notifyDataSetChanged();
+
+        recyclerView.scrollToPosition(shoppingList.getPosition(itemName));
     }
 
     @Override

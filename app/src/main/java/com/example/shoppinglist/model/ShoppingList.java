@@ -51,6 +51,23 @@ public class ShoppingList {
         return it.hasNext() ? itemMap.get(it.next()) : null;
     }
 
+    public int getPosition(String itemName) {
+        if (!itemMap.containsKey(itemName)) {
+            return -1;
+        }
+
+        int position = 0;
+        Iterator<String> it = itemMap.keySet().iterator();
+        while (it.hasNext()) {
+            String currentItemName = it.next();
+            if (currentItemName.equals(itemName)) {
+                break;
+            }
+            position++;
+        }
+        return position;
+    }
+
     public int size() {
         return itemMap.size();
     }

@@ -41,6 +41,9 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
         if (quantity > 1) {
             holder.quantityTextView.setText(" x" + quantity);
         }
+        else {
+            holder.quantityTextView.setText("");
+        }
         holder.checkbox.setChecked(item.isSelected());
     }
 

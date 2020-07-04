@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.shoppinglist.model.Item;
 import com.example.shoppinglist.model.MarketItems;
+import com.example.shoppinglist.model.ShoppingListItem;
 
 public class CatalogListViewAdapter extends RecyclerView.Adapter<CatalogListViewAdapter.CatalogListViewHolder> {
     private MarketItems mData;
     private LayoutInflater mInflater;
+    private OnLongClickListener mOnLongClickListener;
 
     // data is passed into the constructor
     CatalogListViewAdapter(Context context, MarketItems data) {
@@ -51,13 +53,18 @@ public class CatalogListViewAdapter extends RecyclerView.Adapter<CatalogListView
         mData.move(from, to);
     }
 
+    public void setOnLongClickListener(OnLongClickListener onLongClickListener) {
+        mOnLongClickListener = onLongClickListener;
+    }
+
     // stores and recycles views as they are scrolled off screen
-    public class CatalogListViewHolder extends RecyclerView.ViewHolder {
+    public class CatalogListViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         TextView textView;
 
         CatalogListViewHolder(View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.item);
+            itemView.setOnLongClickListener(this);
         }
 
         public void onSelectedItem() {
@@ -69,5 +76,17 @@ public class CatalogListViewAdapter extends RecyclerView.Adapter<CatalogListView
             textView.setAlpha(1.0f);
             itemView.setBackgroundColor(0);
         }
+
+        @Override
+        public boolean onLongClick(View view) {
+            int position = getAdapterPosition();
+            Item item = get(position);
+            mOnLongClickListener.onLongClick(item, position);
+            return true;
+        }
+    }
+
+    public interface OnLongClickListener {
+        void onLongClick(Item item, int position);
     }
 }

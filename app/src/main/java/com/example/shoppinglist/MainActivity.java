@@ -13,10 +13,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.shoppinglist.model.Item;
 import com.example.shoppinglist.model.ShoppingListItem;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, ShoppingListViewAdapter.OnLongClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, ShoppingListViewAdapter.OnLongClickListener, CatalogListViewAdapter.OnLongClickListener {
 
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
@@ -141,15 +142,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FragmentManager fm = getSupportFragmentManager();
 
         Fragment fragment = fm.findFragmentById(R.id.fragment_frame);
-        String tag = fragment.getTag();
-        if (tag == "ShoppingList") {
-            ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragment;
-            EditItemFragment alertDialog = EditItemFragment.newInstance(item.getItemName(), item.getQuantity());
-            alertDialog.setEditItemDialogListener(shoppingListFragment);
-            alertDialog.show(fm, "fragment_alert");
-        }
-        else if (tag == "Catalog") {
-            // TODO add support for editing/removing catalog items
-        }
+
+        ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragment;
+        EditItemFragment alertDialog = EditItemFragment.newInstance(item.getItemName(), item.getQuantity());
+        alertDialog.setEditItemDialogListener(shoppingListFragment);
+        alertDialog.show(fm, "fragment_alert");
+    }
+
+    @Override
+    public void onLongClick(Item item, int position) {
+        FragmentManager fm = getSupportFragmentManager();
+
+        Fragment fragment = fm.findFragmentById(R.id.fragment_frame);
+
+        CatalogFragment catalogFragment = (CatalogFragment)fragment;
+        EditCatalogFragment alertDialog = EditCatalogFragment.newInstance(item.getName(), position);
+        alertDialog.setEditCatalogItemDialogListener(catalogFragment);
+        alertDialog.show(fm, "fragment_alert");
     }
 }

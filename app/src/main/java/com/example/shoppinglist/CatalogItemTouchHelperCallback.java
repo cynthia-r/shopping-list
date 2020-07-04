@@ -42,6 +42,10 @@ public class CatalogItemTouchHelperCallback extends ItemTouchHelper.Callback {
     }
 
     // Override isItemViewSwipeEnabled if we want to support swiping later on
+    @Override
+    public boolean isItemViewSwipeEnabled() {
+        return false;
+    }
 
     @Override
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder,

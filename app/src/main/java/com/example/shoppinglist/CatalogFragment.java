@@ -25,7 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
  * Use the {@link CatalogFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CatalogFragment extends Fragment implements AddCatalogItemFragment.AddCatalogItemDialogListener {
+public class CatalogFragment extends Fragment implements AddCatalogItemFragment.AddCatalogItemDialogListener, EditCatalogFragment.EditCatalogItemDialogListener {
 
     private CatalogListViewAdapter adapter;
     private MarketItems marketItems;
@@ -66,6 +66,7 @@ public class CatalogFragment extends Fragment implements AddCatalogItemFragment.
         RecyclerView recyclerView = activity.findViewById(R.id.catalog_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         adapter = new CatalogListViewAdapter(activity, marketItems);
+        adapter.setOnLongClickListener(activity);
         recyclerView.setAdapter(adapter);
 
         // Set up the Add button
@@ -92,5 +93,21 @@ public class CatalogFragment extends Fragment implements AddCatalogItemFragment.
     public void onItemAdd(String inputText) {
         Item newItem = new Item(inputText);
         marketItems.add(newItem);
+
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemEdit(int position, String newItemName) {
+        marketItems.update(position, newItemName);
+
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemDelete(int position) {
+        marketItems.remove(position);
+
+        adapter.notifyDataSetChanged();
     }
 }

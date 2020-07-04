@@ -47,6 +47,20 @@ public class MarketItems {
         items.add(item);
     }
 
+    public void update(int position, String newItemName) {
+        Item item = items.get(position);
+        int sort = sortMap.get(item.getName());
+
+        sortMap.remove(item.getName());
+
+        item.setName(newItemName);
+        sortMap.put(newItemName, sort);
+    }
+
+    public void remove(int position) {
+        items.remove(position);
+    }
+
     public void move(int from, int to) {
         if (from == to) {
             return;

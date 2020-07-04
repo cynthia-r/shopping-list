@@ -22,8 +22,8 @@ import android.widget.NumberPicker;
 public class EditItemFragment extends DialogFragment {
     private static final String ARG_PARAM1 = "param1";
 
-    private String mParam1;
-    private int mParam2;
+    private String mItemName;
+    private int mQuantity;
     private EditItemDialogListener mEditItemDialogListener;
 
     public EditItemFragment() {
@@ -54,27 +54,27 @@ public class EditItemFragment extends DialogFragment {
         alertDialogBuilder.setView(viewInflated);
 
         AutoCompleteTextView autoTextView = viewInflated.findViewById(R.id.new_item);
-        autoTextView.setText(mParam1);
+        autoTextView.setText(mItemName);
         autoTextView.setEnabled(false);
         autoTextView.setAlpha(0.5f);
 
         final NumberPicker numberPickerView = viewInflated.findViewById(R.id.quantity);
         numberPickerView.setMinValue(1);
         numberPickerView.setMaxValue(10);
-        numberPickerView.setValue(mParam2);
+        numberPickerView.setValue(mQuantity > 0 ? mQuantity : 1);
         numberPickerView.setWrapSelectorWheel(false);
 
-        alertDialogBuilder.setPositiveButton("OK",  new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setPositiveButton("Save",  new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // On success
-                mEditItemDialogListener.onItemEdit(mParam1, numberPickerView.getValue());
+                mEditItemDialogListener.onItemEdit(mItemName, numberPickerView.getValue());
             }
         });
         alertDialogBuilder.setNeutralButton("Delete Item", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mEditItemDialogListener.onItemDelete(mParam1);
+                mEditItemDialogListener.onItemDelete(mItemName);
             }
         });
         alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -106,10 +106,10 @@ public class EditItemFragment extends DialogFragment {
     }
 
     private void setItemName(String itemName) {
-        mParam1 = itemName;
+        mItemName = itemName;
     }
 
     private void setQuantity(int quantity) {
-        mParam2 = quantity;
+        mQuantity = quantity;
     }
 }

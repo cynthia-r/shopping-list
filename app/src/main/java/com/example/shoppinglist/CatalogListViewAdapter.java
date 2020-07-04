@@ -3,20 +3,23 @@ package com.example.shoppinglist;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.view.MotionEventCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.shoppinglist.model.Item;
 import com.example.shoppinglist.model.MarketItems;
-import com.example.shoppinglist.model.ShoppingListItem;
 
 public class CatalogListViewAdapter extends RecyclerView.Adapter<CatalogListViewAdapter.CatalogListViewHolder> {
     private MarketItems mData;
     private LayoutInflater mInflater;
     private OnLongClickListener mOnLongClickListener;
+    private OnStartDragListener mOnDragStartListener;
 
     // data is passed into the constructor
     CatalogListViewAdapter(Context context, MarketItems data) {
@@ -57,14 +60,21 @@ public class CatalogListViewAdapter extends RecyclerView.Adapter<CatalogListView
         mOnLongClickListener = onLongClickListener;
     }
 
+    public void setOnStartDragListener(OnStartDragListener onStartDragListener) {
+        mOnDragStartListener = onStartDragListener;
+    }
+
     // stores and recycles views as they are scrolled off screen
-    public class CatalogListViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+    public class CatalogListViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnTouchListener {
         TextView textView;
+        ImageView handleView;
 
         CatalogListViewHolder(View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.item);
-            itemView.setOnLongClickListener(this);
+            handleView = itemView.findViewById(R.id.handle);
+            textView.setOnLongClickListener(this);
+            handleView.setOnTouchListener(this);
         }
 
         public void onSelectedItem() {
@@ -84,9 +94,28 @@ public class CatalogListViewAdapter extends RecyclerView.Adapter<CatalogListView
             mOnLongClickListener.onLongClick(item, position);
             return true;
         }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            if (MotionEventCompat.getActionMasked(event) ==
+                    MotionEvent.ACTION_DOWN) {
+                mOnDragStartListener.onStartDrag(this);
+            }
+            return false;
+        }
     }
 
     public interface OnLongClickListener {
         void onLongClick(Item item, int position);
+    }
+
+    public interface OnStartDragListener {
+
+        /**
+         * Called when a view is requesting a start of a drag.
+         *
+         * @param viewHolder The holder of the view to drag.
+         */
+        void onStartDrag(RecyclerView.ViewHolder viewHolder);
     }
 }

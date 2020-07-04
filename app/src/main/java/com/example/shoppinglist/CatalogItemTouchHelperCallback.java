@@ -38,7 +38,7 @@ public class CatalogItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public boolean isLongPressDragEnabled() {
-        return true;
+        return false;
     }
 
     // Override isItemViewSwipeEnabled if we want to support swiping later on

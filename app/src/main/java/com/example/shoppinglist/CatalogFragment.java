@@ -25,9 +25,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
  * Use the {@link CatalogFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CatalogFragment extends Fragment implements AddCatalogItemFragment.AddCatalogItemDialogListener, EditCatalogFragment.EditCatalogItemDialogListener {
+public class CatalogFragment extends Fragment implements AddCatalogItemFragment.AddCatalogItemDialogListener, EditCatalogFragment.EditCatalogItemDialogListener,
+        CatalogListViewAdapter.OnStartDragListener {
 
     private CatalogListViewAdapter adapter;
+    private ItemTouchHelper mItemTouchHelper;
     private MarketItems marketItems;
 
     public CatalogFragment() {
@@ -67,15 +69,15 @@ public class CatalogFragment extends Fragment implements AddCatalogItemFragment.
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         adapter = new CatalogListViewAdapter(activity, marketItems);
         adapter.setOnLongClickListener(activity);
+        adapter.setOnStartDragListener(this);
         recyclerView.setAdapter(adapter);
 
         // Set up the Add button
         FloatingActionButton addButton = activity.findViewById(R.id.add);
         addButton.setOnClickListener(activity);
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new CatalogItemTouchHelperCallback());
-
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+        mItemTouchHelper = new ItemTouchHelper(new CatalogItemTouchHelperCallback());
+        mItemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -109,5 +111,10 @@ public class CatalogFragment extends Fragment implements AddCatalogItemFragment.
         marketItems.remove(position);
 
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        mItemTouchHelper.startDrag(viewHolder);
     }
 }

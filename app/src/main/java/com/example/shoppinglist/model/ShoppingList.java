@@ -1,6 +1,7 @@
 package com.example.shoppinglist.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,8 +13,8 @@ import java.util.TreeMap;
 public class ShoppingList {
     private SortedMap<String, ShoppingListItem> itemMap;
 
-    public ShoppingList(MarketItems marketItems) {
-        itemMap = new TreeMap<>(new MarketItemComparator(marketItems));
+    public ShoppingList(Comparator<String> itemComparator) {
+        itemMap = new TreeMap<>(itemComparator);
     }
 
     public boolean contains(String itemName) {
@@ -80,8 +81,8 @@ public class ShoppingList {
         itemMap.clear();
     }
 
-    public void addAll(ShoppingList shoppingList) {
-        for (ShoppingListItem item : shoppingList.toList(false)) {
+    public void addAll(ShoppingList shoppingList, boolean selectedOnly) {
+        for (ShoppingListItem item : shoppingList.toList(selectedOnly)) {
             itemMap.put(item.getItem().getName(), item);
         }
     }

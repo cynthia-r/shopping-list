@@ -14,10 +14,13 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.shoppinglist.model.MarketItems;
+import com.example.shoppinglist.model.PreviouslyBoughtItems;
 import com.example.shoppinglist.model.ShoppingList;
 import com.example.shoppinglist.model.ShoppingListItem;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class SuggestedItemsActivity extends AppCompatActivity implements ShoppingListViewAdapter.OnItemCheckListener,
         ShoppingListViewAdapter.OnLongClickListener, EditItemFragment.EditItemDialogListener {
@@ -35,16 +38,31 @@ public class SuggestedItemsActivity extends AppCompatActivity implements Shoppin
 
         // Retrieve the list
         Bundle bundle = getIntent().getBundleExtra("shoppingList");
+        ArrayList<Parcelable> parcelableList = bundle.getParcelableArrayList("data");
+
+        shoppingList = new ShoppingList(new Comparator<String>() {
+            @Override
+            public int compare(String s, String t1) {
+                return s.compareTo(t1);
+            }
+        });
+        // TODO use default string comparator. Order doesn't matter in this case
+
+        for (Parcelable parcelable : parcelableList) {
+            ShoppingListItem item = (ShoppingListItem)parcelable;
+            shoppingList.add(item);
+        }
 
         // Retrieve the list name
         currentList = bundle.getString("currentList");
 
         String filename = currentList + "-listFile";
         FileService fileService = new FileService(this);
-        shoppingList = fileService.readShoppingList(filename);
+        //shoppingList = fileService.readShoppingList(filename);
 
-        MarketItems marketItems = fileService.readMarketItems("catalog");
-        SuggestedItemsService suggestedItemsService = new SuggestedItemsService(marketItems);
+        String previouslyBoughtFilename = currentList + "-boughtListFile";
+        PreviouslyBoughtItems previouslyBoughtItems = fileService.readPreviouslyBoughtItems(previouslyBoughtFilename);
+        SuggestedItemsService suggestedItemsService = new SuggestedItemsService(previouslyBoughtItems);
 
         // Initialize a shopping list with all the recommended items unselected
         suggestedItemList = suggestedItemsService.getSuggestedItems(shoppingList);
@@ -115,13 +133,13 @@ public class SuggestedItemsActivity extends AppCompatActivity implements Shoppin
 
     private void openConfirmActivity(){
         // Add all the selected suggested items to the original shopping list
-        shoppingList.addAll(suggestedItemList);
+        shoppingList.addAll(suggestedItemList, true);
 
         Intent intent = new Intent(this, ConfirmActivity.class);
 
         Bundle bundle = new Bundle();
         ArrayList<Parcelable> parcelableList = new ArrayList<>();
-        parcelableList.addAll(shoppingList.toList(true));
+        parcelableList.addAll(shoppingList.toList(false));
         bundle.putParcelableArrayList("data", parcelableList);
         bundle.putString("currentList", currentList);
         intent.putExtra("shoppingList", bundle);

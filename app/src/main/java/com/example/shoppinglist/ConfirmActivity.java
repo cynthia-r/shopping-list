@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.shoppinglist.model.PreviouslyBoughtItems;
+import com.example.shoppinglist.model.ShoppingList;
 import com.example.shoppinglist.model.ShoppingListItem;
 
 import java.util.ArrayList;
@@ -31,18 +33,24 @@ public class ConfirmActivity extends AppCompatActivity {
         // Retrieve the list
         Bundle bundle = getIntent().getBundleExtra("shoppingList");
         ArrayList<Parcelable> parcelableList = bundle.getParcelableArrayList("data");
+
         final List<ShoppingListItem> itemList = new ArrayList<>();
+        final List<ShoppingListItem> selectedItemList = new ArrayList<>();
         for (Parcelable parcelable : parcelableList) {
-            itemList.add((ShoppingListItem)parcelable);
+            ShoppingListItem item = (ShoppingListItem)parcelable;
+            itemList.add(item);
+            if (item.isSelected()) {
+                selectedItemList.add(item);
+            }
         }
 
         // Retrieve the list name
         currentList = bundle.getString("currentList");
 
-        // set up the confirmed list RecyclerView
+        // Set up the confirmed list RecyclerView
         RecyclerView recyclerView = findViewById(R.id.main_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new ConfirmListViewAdapter(this, itemList);
+        adapter = new ConfirmListViewAdapter(this, selectedItemList);
         recyclerView.setAdapter(adapter);
 
         // Set up the Export button
@@ -51,7 +59,7 @@ public class ConfirmActivity extends AppCompatActivity {
             //@RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
-                sendEmail(itemList);
+                sendEmail(selectedItemList);
             }
         });
 
@@ -61,16 +69,24 @@ public class ConfirmActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
-                save(itemList);
+                save(itemList, selectedItemList);
             }
         });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void save(List<ShoppingListItem> items) {
+    private void save(List<ShoppingListItem> items, List<ShoppingListItem> selectedItems) {
         String filename = currentList + "-listFile";
         FileService fileService = new FileService(this);
-        fileService.saveShoppingList(filename, items);
+        fileService.saveShoppingList(filename, selectedItems);
+
+        String previouslyBoughtFilename = currentList + "-boughtListFile";
+        PreviouslyBoughtItems previouslyBoughtItems = fileService.readPreviouslyBoughtItems(previouslyBoughtFilename);
+
+        SuggestedItemsService suggestedItemsService = new SuggestedItemsService(previouslyBoughtItems);
+        suggestedItemsService.updateBoughtItems(items);
+
+        fileService.savePreviouslyBoughtItems(previouslyBoughtFilename, previouslyBoughtItems);
 
         Intent intent = new Intent();
         setResult(3, intent);

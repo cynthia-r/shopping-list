@@ -18,8 +18,8 @@ public class OnItemTouchListener implements View.OnTouchListener {
         int motionAction = MotionEventCompat.getActionMasked(motionEvent);
 
         if (motionAction == MotionEvent.ACTION_DOWN) {
-            textView.setAlpha(0.7f);
-            view.setBackgroundColor(Color.LTGRAY);
+            textView.setAlpha(0.9f);
+            view.setBackgroundColor(Color.parseColor("#f5f5f5"));
         }
 
         if (motionAction == MotionEvent.ACTION_UP || motionAction == MotionEvent.ACTION_CANCEL) {

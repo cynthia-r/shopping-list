@@ -7,7 +7,11 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 
 import com.example.shoppinglist.model.Item;
+import com.example.shoppinglist.model.MarketItem;
+import com.example.shoppinglist.model.MarketItemComparator;
 import com.example.shoppinglist.model.MarketItems;
+import com.example.shoppinglist.model.PreviouslyBoughtItem;
+import com.example.shoppinglist.model.PreviouslyBoughtItems;
 import com.example.shoppinglist.model.ShoppingList;
 import com.example.shoppinglist.model.ShoppingListItem;
 
@@ -73,17 +77,18 @@ public class FileService {
     public ShoppingList readShoppingList(String filename) {
 
         MarketItems marketItems = this.readMarketItems("catalog");
+        MarketItemComparator itemComparator = new MarketItemComparator(marketItems);
 
         if (!createFileIfNotExists(filename)) {
-            return new ShoppingList(marketItems);
+            return new ShoppingList(itemComparator);
         }
 
         InputStreamReader inputStreamReader = openFile(filename);
         if (inputStreamReader == null) {
-            return new ShoppingList(marketItems);
+            return new ShoppingList(itemComparator);
         }
 
-        ShoppingList shoppingList = new ShoppingList(marketItems);
+        ShoppingList shoppingList = new ShoppingList(itemComparator);
         try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
             String line = reader.readLine();
             while (line != null) {
@@ -114,12 +119,16 @@ public class FileService {
 
         InputStreamReader inputStreamReader = openFile(filename);
 
-        List<Item> itemList = new ArrayList<>();
+        //List<Item> itemList = new ArrayList<>();
+        MarketItems marketItems = new MarketItems();
         try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
             String line = reader.readLine();
             while (line != null) {
-                Item item = new Item(line);
-                itemList.add(item);
+                StringTokenizer tokenizer = new StringTokenizer(line, ":");
+                String itemName = tokenizer.nextToken();
+
+                Item item = new Item(itemName);
+                marketItems.add(item);
 
                 line = reader.readLine();
             }
@@ -129,12 +138,44 @@ public class FileService {
 
         closeFile(inputStreamReader);
 
-        Item[] items = new Item[itemList.size()];
+        /*Item[] items = new Item[itemList.size()];
         for (int i=0; i<itemList.size(); i++) {
             items[i] = itemList.get(i);
+        }*/
+
+        return marketItems;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public PreviouslyBoughtItems readPreviouslyBoughtItems(String filename) {
+        if (!createFileIfNotExists(filename)) {
+            return new PreviouslyBoughtItems();
         }
 
-        return new MarketItems(items);
+        InputStreamReader inputStreamReader = openFile(filename);
+
+        PreviouslyBoughtItems previouslyBoughtItems = new PreviouslyBoughtItems();
+        try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
+            String line = reader.readLine();
+            while (line != null) {
+                StringTokenizer tokenizer = new StringTokenizer(line, ":");
+                String itemName = tokenizer.nextToken();
+                int lastBought = tokenizer.hasMoreTokens()
+                        ? Integer.parseInt(tokenizer.nextToken()) : -1;
+
+                Item item = new Item(itemName);
+                PreviouslyBoughtItem previouslyBoughtItem = new PreviouslyBoughtItem(item, lastBought);
+                previouslyBoughtItems.add(previouslyBoughtItem);
+
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            Toast.makeText(mContext, "Failed to read from file", Toast.LENGTH_SHORT);
+        }
+
+        closeFile(inputStreamReader);
+
+        return previouslyBoughtItems;
     }
 
     /**
@@ -199,7 +240,6 @@ public class FileService {
         }
     }
 
-
     /**
      * Writes the specified items to the file.
      * @param filename
@@ -214,8 +254,8 @@ public class FileService {
         try (FileOutputStream fos = mContext.openFileOutput(filename, Context.MODE_PRIVATE)) {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
-            for (Item item: marketItems.toList()) {
-                bw.write(item.getName());
+            for (MarketItem item: marketItems.toList()) {
+                bw.write(item.getItemName());
                 bw.newLine();
             }
 
@@ -226,6 +266,33 @@ public class FileService {
         }
     }
 
+    /**
+     * Writes the specified items to the file.
+     * @param filename
+     * @param previouslyBoughtItems
+     */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void savePreviouslyBoughtItems(String filename, PreviouslyBoughtItems previouslyBoughtItems) {
+        if (!createFileIfNotExists(filename)) {
+            return;
+        }
+
+        try (FileOutputStream fos = mContext.openFileOutput(filename, Context.MODE_PRIVATE)) {
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+            for (PreviouslyBoughtItem item: previouslyBoughtItems.toList()) {
+                bw.write(item.getItemName());
+                bw.write(':');
+                bw.write(Integer.toString(item.getLastBought()));
+                bw.newLine();
+            }
+
+            bw.flush();
+        }
+        catch (IOException e) {
+            Toast.makeText(mContext, "Failed to write to file", Toast.LENGTH_SHORT);
+        }
+    }
     private boolean createFileIfNotExists(String filename) {
         File directory = mContext.getFilesDir();
         File file = new File(directory, filename);

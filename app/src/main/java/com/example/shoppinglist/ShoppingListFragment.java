@@ -196,7 +196,7 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         ShoppingList newShoppingList = fileService.readShoppingList(filename);
 
         shoppingList.clear();
-        shoppingList.addAll(newShoppingList);
+        shoppingList.addAll(newShoppingList, false);
 
         adapter.notifyDataSetChanged();
     }
@@ -211,7 +211,7 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
 
         Bundle bundle = new Bundle();
         ArrayList<Parcelable> parcelableList = new ArrayList<>();
-        parcelableList.addAll(shoppingList.toList(true));
+        parcelableList.addAll(shoppingList.toList(false));
         bundle.putParcelableArrayList("data", parcelableList);
         bundle.putString("currentList", currentList);
         intent.putExtra("shoppingList", bundle);

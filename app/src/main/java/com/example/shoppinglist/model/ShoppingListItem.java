@@ -1,7 +1,10 @@
 package com.example.shoppinglist.model;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import androidx.annotation.RequiresApi;
 
 public class ShoppingListItem implements Parcelable {
     private Item mItem;
@@ -17,6 +20,7 @@ public class ShoppingListItem implements Parcelable {
     protected ShoppingListItem(Parcel in) {
         mItem = new Item(in.readString());
         mQuantity = in.readInt();
+        mIsSelected = in.readInt() > 0;
     }
 
     public Item getItem() {
@@ -64,5 +68,6 @@ public class ShoppingListItem implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(getItemName());
         parcel.writeInt(mQuantity);
+        parcel.writeInt(isSelected() ? 1 : 0);
     }
 }

@@ -13,14 +13,14 @@ import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.shoppinglist.model.MarketItems;
 import com.example.shoppinglist.model.PreviouslyBoughtItems;
 import com.example.shoppinglist.model.ShoppingList;
 import com.example.shoppinglist.model.ShoppingListItem;
+import com.example.shoppinglist.service.FileService;
+import com.example.shoppinglist.service.SuggestedItemsService;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 public class SuggestedItemsActivity extends AppCompatActivity implements ShoppingListViewAdapter.OnItemCheckListener,
         ShoppingListViewAdapter.OnLongClickListener, EditItemFragment.EditItemDialogListener {
@@ -40,13 +40,13 @@ public class SuggestedItemsActivity extends AppCompatActivity implements Shoppin
         Bundle bundle = getIntent().getBundleExtra("shoppingList");
         ArrayList<Parcelable> parcelableList = bundle.getParcelableArrayList("data");
 
+        // Use default comparator since the order of the items doesn't matter here
         shoppingList = new ShoppingList(new Comparator<String>() {
             @Override
             public int compare(String s, String t1) {
                 return s.compareTo(t1);
             }
         });
-        // TODO use default string comparator. Order doesn't matter in this case
 
         for (Parcelable parcelable : parcelableList) {
             ShoppingListItem item = (ShoppingListItem)parcelable;
@@ -58,7 +58,6 @@ public class SuggestedItemsActivity extends AppCompatActivity implements Shoppin
 
         String filename = currentList + "-listFile";
         FileService fileService = new FileService(this);
-        //shoppingList = fileService.readShoppingList(filename);
 
         String previouslyBoughtFilename = currentList + "-boughtListFile";
         PreviouslyBoughtItems previouslyBoughtItems = fileService.readPreviouslyBoughtItems(previouslyBoughtFilename);

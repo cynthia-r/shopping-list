@@ -6,8 +6,6 @@ import java.util.List;
 
 public class MarketItems {
     private List<MarketItem> items;
-
-    //private HashMap<String, Integer> sortMap = new HashMap<>();
     private HashMap<String, MarketItem> itemMap;
 
     public MarketItems() {
@@ -21,7 +19,6 @@ public class MarketItems {
 
     private void initializeItems(Item[] itemArray) {
         for (int i=0; i<itemArray.length; i++) {
-            //sortMap.put(itemArray[i].getName(), i);
             MarketItem marketItem = new MarketItem(itemArray[i], i);
             items.add(marketItem);
             itemMap.put(itemArray[i].getName(), marketItem);
@@ -29,8 +26,6 @@ public class MarketItems {
     }
 
     public int getPosition(String itemName) {
-        /*return sortMap.containsKey(itemName)
-            ? sortMap.get(itemName) : -1;*/
         return itemMap.containsKey(itemName) ?
                 itemMap.get(itemName).getPosition() : -1;
     }
@@ -49,7 +44,6 @@ public class MarketItems {
     }
 
     public void add(Item item) {
-        //sortMap.put(item.getName(), items.size());
         MarketItem marketItem = new MarketItem(item, items.size());
         items.add(marketItem);
         itemMap.put(item.getName(), marketItem);

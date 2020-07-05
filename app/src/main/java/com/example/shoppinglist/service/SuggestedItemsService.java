@@ -1,14 +1,11 @@
-package com.example.shoppinglist;
+package com.example.shoppinglist.service;
 
-import com.example.shoppinglist.model.Item;
-import com.example.shoppinglist.model.MarketItems;
 import com.example.shoppinglist.model.PreviouslyBoughtItem;
 import com.example.shoppinglist.model.PreviouslyBoughtItemComparator;
 import com.example.shoppinglist.model.PreviouslyBoughtItems;
 import com.example.shoppinglist.model.ShoppingList;
 import com.example.shoppinglist.model.ShoppingListItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SuggestedItemsService {
@@ -58,9 +55,5 @@ public class SuggestedItemsService {
 
         // Remove any item in previously bought that has lastBought > 3
         mPreviouslyBoughtItems.clearOldItems();
-    }
-
-    public List<PreviouslyBoughtItem> getPreviouslyBoughtItems() {
-        return mPreviouslyBoughtItems.toList();
     }
 }

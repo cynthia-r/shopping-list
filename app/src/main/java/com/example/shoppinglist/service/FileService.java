@@ -1,4 +1,4 @@
-package com.example.shoppinglist;
+package com.example.shoppinglist.service;
 
 import android.content.Context;
 import android.os.Build;
@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -137,11 +136,6 @@ public class FileService {
         }
 
         closeFile(inputStreamReader);
-
-        /*Item[] items = new Item[itemList.size()];
-        for (int i=0; i<itemList.size(); i++) {
-            items[i] = itemList.get(i);
-        }*/
 
         return marketItems;
     }

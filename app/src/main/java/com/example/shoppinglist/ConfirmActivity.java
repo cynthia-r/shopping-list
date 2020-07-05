@@ -14,10 +14,17 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.shoppinglist.model.PreviouslyBoughtItems;
-import com.example.shoppinglist.model.ShoppingList;
 import com.example.shoppinglist.model.ShoppingListItem;
+import com.example.shoppinglist.service.DateService;
+import com.example.shoppinglist.service.FileService;
+import com.example.shoppinglist.service.SuggestedItemsService;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ConfirmActivity extends AppCompatActivity {
@@ -105,10 +112,12 @@ public class ConfirmActivity extends AppCompatActivity {
             sb.append("\n");
         }
 
+        DateService dateService = new DateService();
+
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("message/rfc822");
         i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"add-to-things-ryh544m1umg5aj3wf68@things.email"});
-        i.putExtra(Intent.EXTRA_SUBJECT, "Liste de courses");
+        i.putExtra(Intent.EXTRA_SUBJECT, "Liste de courses " + dateService.getNextDate(currentList));
         i.putExtra(Intent.EXTRA_TEXT   , sb.toString());
         try {
             startActivity(Intent.createChooser(i, "Send mail..."));

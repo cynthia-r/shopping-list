@@ -2,14 +2,11 @@ package com.example.shoppinglist;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -17,18 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.SearchView;
 
 import com.example.shoppinglist.model.MarketItems;
-
-import java.util.Observable;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import com.example.shoppinglist.service.FileService;
 
 
 /**

@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.shoppinglist.ListConstants;
 import com.example.shoppinglist.model.Item;
 import com.example.shoppinglist.model.MarketItem;
 import com.example.shoppinglist.model.MarketItemComparator;
@@ -85,7 +86,7 @@ public class FileService {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public ShoppingList readShoppingList(String filename) {
 
-        MarketItems marketItems = this.readMarketItems("catalog");
+        MarketItems marketItems = this.readMarketItems(ListConstants.CATALOG);
         MarketItemComparator itemComparator = new MarketItemComparator(marketItems);
 
         if (!createFileIfNotExists(filename)) {
@@ -128,7 +129,6 @@ public class FileService {
 
         InputStreamReader inputStreamReader = openFile(filename);
 
-        //List<Item> itemList = new ArrayList<>();
         MarketItems marketItems = new MarketItems();
         try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
             String line = reader.readLine();

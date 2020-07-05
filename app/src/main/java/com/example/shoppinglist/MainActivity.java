@@ -12,8 +12,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 import com.example.shoppinglist.model.Item;
 import com.example.shoppinglist.model.ShoppingListItem;
@@ -66,8 +64,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         currentNavItemId = R.id.nav_shopping_list;
         displayFragment(currentNavItemId);
         navigationView.getMenu().findItem(currentNavItemId).setChecked(true);
-
-
     }
 
     @Override
@@ -130,17 +126,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Fragment fragment = fm.findFragmentById(R.id.fragment_frame);
         String tag = fragment.getTag();
 
-
         if (tag == ShoppingListFragment.TAG) {
             ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragment;
-            /*AddFragment alertDialog = AddFragment.newInstance();
-            alertDialog.setAddItemDialogListener(shoppingListFragment);
-            alertDialog.show(fm, AddFragment.TAG);*/
-        //}
+            CurrentListFragment currentListFragment = shoppingListFragment.getCurrentListFragment();
 
-
-            CurrentListFragment currentListFragment = getCurrentListFragment(shoppingListFragment);
-            //CurrentListFragment currentListFragment = (CurrentListFragment) cfragment;
             AddFragment alertDialog = AddFragment.newInstance();
             alertDialog.setAddItemDialogListener(currentListFragment);
             alertDialog.show(fm, AddFragment.TAG);
@@ -153,24 +142,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private CurrentListFragment getCurrentListFragment(ShoppingListFragment shoppingListFragment) {
-        // Find which fragment is currently displayed
-        FragmentManager cfm = shoppingListFragment.getChildFragmentManager();
-
-        List<Fragment> fragmentList = cfm.getFragments();
-        Fragment currentFragment = null;
-        int i=0;
-        while (i<fragmentList.size()) {
-            CurrentListFragment currentListFragment = (CurrentListFragment) fragmentList.get(i);
-            if (currentListFragment.getCurrentList().equals(shoppingListFragment.getCurrentList())) {
-                currentFragment = currentListFragment;
-                break;
-            }
-            i++;
-        }
-        return (CurrentListFragment) currentFragment;
-    }
-
     @Override
     public void onLongClick(ShoppingListItem item) {
         FragmentManager fm = getSupportFragmentManager();
@@ -179,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragment;
         EditItemFragment alertDialog = EditItemFragment.newInstance(item.getItemName(), item.getQuantity());
-        CurrentListFragment currentListFragment = getCurrentListFragment(shoppingListFragment);
+        CurrentListFragment currentListFragment = shoppingListFragment.getCurrentListFragment();
         alertDialog.setEditItemDialogListener(currentListFragment);
         alertDialog.show(fm, EditItemFragment.TAG);
     }

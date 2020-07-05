@@ -13,6 +13,8 @@ import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.shoppinglist.model.MarketItemComparator;
+import com.example.shoppinglist.model.MarketItems;
 import com.example.shoppinglist.model.PreviouslyBoughtItems;
 import com.example.shoppinglist.model.ShoppingList;
 import com.example.shoppinglist.model.ShoppingListItem;
@@ -20,7 +22,6 @@ import com.example.shoppinglist.service.FileService;
 import com.example.shoppinglist.service.SuggestedItemsService;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class SuggestedItemsActivity extends AppCompatActivity implements ShoppingListViewAdapter.OnItemCheckListener,
         ShoppingListViewAdapter.OnLongClickListener, EditItemFragment.EditItemDialogListener {
@@ -40,13 +41,11 @@ public class SuggestedItemsActivity extends AppCompatActivity implements Shoppin
         Bundle bundle = getIntent().getBundleExtra(ListConstants.SHOPPING_LIST);
         ArrayList<Parcelable> parcelableList = bundle.getParcelableArrayList(ListConstants.DATA);
 
-        // Use default comparator since the order of the items doesn't matter here
-        shoppingList = new ShoppingList(new Comparator<String>() {
-            @Override
-            public int compare(String s, String t1) {
-                return s.compareTo(t1);
-            }
-        });
+        FileService fileService = new FileService(this);
+
+        MarketItems marketItems = fileService.readMarketItems(ListConstants.CATALOG);
+        MarketItemComparator itemComparator = new MarketItemComparator(marketItems);
+        shoppingList = new ShoppingList(itemComparator);
 
         for (Parcelable parcelable : parcelableList) {
             ShoppingListItem item = (ShoppingListItem)parcelable;
@@ -55,9 +54,6 @@ public class SuggestedItemsActivity extends AppCompatActivity implements Shoppin
 
         // Retrieve the list name
         currentList = bundle.getString(ListConstants.CURRENT_LIST);
-
-
-        FileService fileService = new FileService(this);
 
         String previouslyBoughtFilename = fileService.getBoughtListFilename(currentList);
         PreviouslyBoughtItems previouslyBoughtItems = fileService.readPreviouslyBoughtItems(previouslyBoughtFilename);
@@ -123,9 +119,11 @@ public class SuggestedItemsActivity extends AppCompatActivity implements Shoppin
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // check if the request code is same as what is passed  here it is 2
+        // Check if the request code is same as what is passed  here it is 2
         if (requestCode == 2 && resultCode == 3) {
             // Finish the activity to go back to the main activity
+            Intent intent = new Intent();
+            setResult(3, intent);
             finish();
         }
     }

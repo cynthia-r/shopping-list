@@ -1,11 +1,8 @@
 package com.example.shoppinglist;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,15 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.shoppinglist.model.Item;
-import com.example.shoppinglist.model.MarketItemComparator;
-import com.example.shoppinglist.model.MarketItems;
 import com.example.shoppinglist.model.ShoppingList;
 import com.example.shoppinglist.model.ShoppingListItem;
 import com.example.shoppinglist.service.FileService;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,13 +45,12 @@ public class CurrentListFragment extends Fragment implements ShoppingListViewAda
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
+     * @param list list.
      * @return A new instance of fragment CurrentListFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static CurrentListFragment newInstance(String param1) {
+    public static CurrentListFragment newInstance(String list) {
         CurrentListFragment fragment = new CurrentListFragment();
-        fragment.setCurrentList(param1);
+        fragment.setCurrentList(list);
         return fragment;
     }
 
@@ -78,74 +70,27 @@ public class CurrentListFragment extends Fragment implements ShoppingListViewAda
 
         View rootView = inflater.inflate(R.layout.fragment_current_list, container, false);
 
-        //TextView textView = rootView.findViewById(R.id.text1);
-        //textView.setText(currentList);
-
         MainActivity activity = (MainActivity)getActivity();
 
         FileService fileService = new FileService(activity);
 
-        List<String> lists = Arrays.asList(getResources().getStringArray(R.array.lists_array));
-
-        if (currentList == null || currentList.isEmpty()) {
-            currentList = fileService.getCurrentList(ListConstants.CURRENT_LIST);
-        }
-        if (currentList.isEmpty()) {
-            currentList = lists.get(0);
-        }
-
         String filename = fileService.getShoppingListFilename(currentList);
         shoppingList = fileService.readShoppingList(filename);
 
-        // set up the shopping list RecyclerView
-        ShoppingList fooList = new ShoppingList(new MarketItemComparator(new MarketItems()));
-        fooList.add(new ShoppingListItem(new Item(currentList), 1, false));
+        // Set up the shopping list RecyclerView
         recyclerView = rootView.findViewById(R.id.main_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         adapter = new ShoppingListViewAdapter(activity, shoppingList);
-        //adapter = new ShoppingListViewAdapter(activity, fooList);
         adapter.setItemCheckListener(this);
         adapter.setLongClickListener(activity);
         recyclerView.setAdapter(adapter);
-
-        /*// Set up the Add button
-        FloatingActionButton addButton = rootView.findViewById(R.id.add);
-        addButton.setOnClickListener(activity);*/
 
         // Inflate the layout for this fragment
         return rootView;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        //MainActivity activity = (MainActivity)getActivity();
-
-        /*FileService fileService = new FileService(activity);
-
-        List<String> lists = Arrays.asList(getResources().getStringArray(R.array.lists_array));
-
-        if (currentList == null || currentList.isEmpty()) {
-            currentList = fileService.getCurrentList(ListConstants.CURRENT_LIST);
-        }
-        if (currentList.isEmpty()) {
-            currentList = lists.get(0);
-        }
-
-        String filename = fileService.getShoppingListFilename(currentList);
-        shoppingList = fileService.readShoppingList(filename);
-
-        // set up the shopping list RecyclerView
-        recyclerView = activity.findViewById(R.id.main_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
-        adapter = new ShoppingListViewAdapter(activity, shoppingList);
-        adapter.setItemCheckListener(this);
-        adapter.setLongClickListener(activity);
-        recyclerView.setAdapter(adapter);*/
-
-
+    public ShoppingList getShoppingList() {
+        return shoppingList;
     }
 
     public void setCurrentList(String list) {
@@ -158,8 +103,6 @@ public class CurrentListFragment extends Fragment implements ShoppingListViewAda
         FileService fileService = new FileService(getContext());
         String filename = fileService.getShoppingListFilename(currentList);
         fileService.saveShoppingList(filename, shoppingList);
-
-        fileService.saveCurrentList(ListConstants.CURRENT_LIST, currentList);
 
         super.onStop();
     }
@@ -203,17 +146,16 @@ public class CurrentListFragment extends Fragment implements ShoppingListViewAda
         adapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void onConfirmActivityResult()
     {
-        super.onActivityResult(requestCode, resultCode, data);
+        // Update the shopping list from file
+        FileService fileService = new FileService(getContext());
+        String filename = fileService.getShoppingListFilename(currentList);
+        ShoppingList newShoppingList = fileService.readShoppingList(filename);
 
-        // TODO fix this - list doesn't get updated after save
-
-        // check if the request code is same as what is passed  here it is 2
-        if (requestCode == 2 && resultCode == 3) {
-            shoppingList.clearUnselected();
-            adapter.notifyDataSetChanged();
-        }
+        shoppingList.clear();
+        shoppingList.addAll(newShoppingList, false);
+        adapter.notifyDataSetChanged();
     }
 }

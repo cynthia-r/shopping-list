@@ -2,11 +2,8 @@ package com.example.shoppinglist.model;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -99,21 +96,5 @@ public class ShoppingList {
         }
 
         return items;
-    }
-
-    public void clearUnselected() {
-
-        Set<String> allKeys = itemMap.keySet();
-        List<String> keysToRemove = new ArrayList<>();
-
-        for (String itemName : allKeys) {
-            if (!itemMap.get(itemName).isSelected()) {
-                keysToRemove.add(itemName);
-            }
-        }
-
-        for (String i : keysToRemove) {
-            itemMap.remove(i);
-        }
     }
 }

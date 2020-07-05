@@ -51,12 +51,7 @@ public class MarketItems {
 
     public void update(int position, String newItemName) {
         MarketItem item = items.get(position);
-        //int sort = sortMap.get(item.getName());
-
-        //sortMap.remove(item.getName());
-
         item.setItemName(newItemName);
-        //sortMap.put(newItemName, sort);
     }
 
     public void remove(int position) {
@@ -78,7 +73,6 @@ public class MarketItems {
             for (int i=to; i<=from; i++) {
                 MarketItem item = items.get(i);
                 int newIndex = to + (i - to);
-                //sortMap.put(item.getName(), newIndex);
                 item.setPosition(newIndex);
             }
         }
@@ -86,7 +80,6 @@ public class MarketItems {
             for (int i=to; i>=from; i--) {
                 MarketItem item = items.get(i);
                 int newIndex = to - (to - i);
-                //sortMap.put(item.getName(), newIndex);
                 item.setPosition(newIndex);
             }
         }

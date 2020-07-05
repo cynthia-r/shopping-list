@@ -30,6 +30,7 @@ public class CatalogFragment extends Fragment implements AddCatalogItemFragment.
     public static final String TAG = "Catalog";
 
     private CatalogListViewAdapter adapter;
+    private RecyclerView recyclerView;
     private ItemTouchHelper mItemTouchHelper;
     private MarketItems marketItems;
 
@@ -65,7 +66,7 @@ public class CatalogFragment extends Fragment implements AddCatalogItemFragment.
         marketItems = fileService.readMarketItems(ListConstants.CATALOG);
 
         // set up the shopping list RecyclerView
-        RecyclerView recyclerView = activity.findViewById(R.id.catalog_list);
+        recyclerView = activity.findViewById(R.id.catalog_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         adapter = new CatalogListViewAdapter(activity, marketItems);
         adapter.setOnLongClickListener(activity);
@@ -92,11 +93,13 @@ public class CatalogFragment extends Fragment implements AddCatalogItemFragment.
     }
 
     @Override
-    public void onItemAdd(String inputText) {
-        Item newItem = new Item(inputText);
+    public void onItemAdd(String itemName) {
+        Item newItem = new Item(itemName);
         marketItems.add(newItem);
 
         adapter.notifyDataSetChanged();
+
+        recyclerView.scrollToPosition(marketItems.getPosition(itemName));
     }
 
     @Override

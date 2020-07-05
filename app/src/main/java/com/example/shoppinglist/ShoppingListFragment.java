@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import android.os.Parcelable;
 import android.view.LayoutInflater;
@@ -34,22 +38,31 @@ import java.util.List;
  * Use the {@link ShoppingListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ShoppingListFragment extends Fragment implements ShoppingListViewAdapter.OnItemCheckListener,
-        AddFragment.AddItemDialogListener, AdapterView.OnItemSelectedListener, EditItemFragment.EditItemDialogListener {
+public class ShoppingListFragment extends Fragment implements /*ShoppingListViewAdapter.OnItemCheckListener,*/
+        /*AddFragment.AddItemDialogListener,*/ AdapterView.OnItemSelectedListener, /*EditItemFragment.EditItemDialogListener,*/ ViewPager.OnPageChangeListener {
 
     public static final String TAG = "ShoppingList";
 
-    private ShoppingListViewAdapter adapter;
-    private RecyclerView recyclerView;
-    private ShoppingList shoppingList;
+    //private ShoppingListViewAdapter adapter;
+    //private RecyclerView recyclerView;
+    //private ShoppingList shoppingList;
     private String currentList;
+    private List<String> lists;
+
+    private ViewPager mPager;
+    private PagerAdapter pagerAdapter;
 
     public ShoppingListFragment() {
         // Required empty public constructor
     }
 
-    public static ShoppingListFragment newInstance() {
+    public void setCurrentList(String list) {
+        currentList = list;
+    }
+
+    public static ShoppingListFragment newInstance(String list) {
         ShoppingListFragment fragment = new ShoppingListFragment();
+        fragment.setCurrentList(list);
         return fragment;
     }
 
@@ -61,8 +74,17 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        View rootView = inflater.inflate(R.layout.fragment_shopping_list, container, false);
+
+        // Instantiate a ViewPager and a PagerAdapter
+        mPager = rootView.findViewById(R.id.pager);
+        pagerAdapter = new ScreenSlidePagerAdapter(getChildFragmentManager(), getResources().getStringArray(R.array.lists_array));
+        mPager.setAdapter(pagerAdapter);
+        mPager.setOnPageChangeListener(this);
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_shopping_list, container, false);
+        return rootView;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -74,23 +96,17 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
 
         FileService fileService = new FileService(activity);
 
-        List<String> lists = Arrays.asList(getResources().getStringArray(R.array.lists_array));
+        lists = Arrays.asList(getResources().getStringArray(R.array.lists_array));
 
-        currentList = fileService.getCurrentList(ListConstants.CURRENT_LIST);
-        if (currentList.isEmpty()) {
+        /*if (currentList == null || currentList.isEmpty()) {
+            currentList = fileService.getCurrentList(ListConstants.CURRENT_LIST);
+        }*/
+        if (currentList == null || currentList.isEmpty()) {
             currentList = lists.get(0);
         }
 
-        String filename = fileService.getShoppingListFilename(currentList);
-        shoppingList = fileService.readShoppingList(filename);
-
-        // set up the shopping list RecyclerView
-        recyclerView = activity.findViewById(R.id.main_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
-        adapter = new ShoppingListViewAdapter(activity, shoppingList);
-        adapter.setItemCheckListener(this);
-        adapter.setLongClickListener(activity);
-        recyclerView.setAdapter(adapter);
+        /*String filename = fileService.getShoppingListFilename(currentList);
+        shoppingList = fileService.readShoppingList(filename);*/
 
         // Setup the spinner
         Spinner spinner = activity.findViewById(R.id.list_spinner);
@@ -115,7 +131,7 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    /*@RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onStop () {
         FileService fileService = new FileService(getContext());
@@ -137,9 +153,9 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
     public void onItemUncheck(int position) {
         ShoppingListItem item = adapter.getItem(position);
         shoppingList.deselect(item.getItemName());
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onItemAdd(String itemName, int quantity) {
 
         if (itemName.isEmpty() || shoppingList.contains(itemName)) {
@@ -152,9 +168,9 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         adapter.notifyDataSetChanged();
 
         recyclerView.scrollToPosition(shoppingList.getPosition(itemName));
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onItemEdit(String itemName, int quantity) {
         shoppingList.update(itemName, quantity);
         adapter.notifyDataSetChanged();
@@ -164,9 +180,9 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
     public void onItemDelete(String itemName) {
         shoppingList.remove(itemName);
         adapter.notifyDataSetChanged();
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
@@ -176,12 +192,12 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
             shoppingList.clearUnselected();
             adapter.notifyDataSetChanged();
         }
-    }
+    }*/
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        String listName = (String) adapterView.getItemAtPosition(i);
+        /*String listName = (String) adapterView.getItemAtPosition(i);
 
         if (listName.equals(currentList)) {
             return;
@@ -201,7 +217,7 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         shoppingList.clear();
         shoppingList.addAll(newShoppingList, false);
 
-        adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();*/
     }
 
     @Override
@@ -209,7 +225,12 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         // No-op
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void openSuggestedItemsActivity(){
+        FileService fileService = new FileService(getContext());
+        String filename = fileService.getShoppingListFilename(currentList);
+        ShoppingList shoppingList = fileService.readShoppingList(filename);
+
         Intent intent = new Intent(getContext(), SuggestedItemsActivity.class);
 
         Bundle bundle = new Bundle();
@@ -220,5 +241,26 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         intent.putExtra(ListConstants.SHOPPING_LIST, bundle);
 
         startActivityForResult(intent, 2);
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        // No-op
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        currentList = lists.get(position);
+
+        // TODO update spinner
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+        // No-op
+    }
+
+    public String getCurrentList() {
+        return currentList;
     }
 }

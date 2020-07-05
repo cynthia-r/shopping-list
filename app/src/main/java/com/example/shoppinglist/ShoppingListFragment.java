@@ -37,6 +37,8 @@ import java.util.List;
 public class ShoppingListFragment extends Fragment implements ShoppingListViewAdapter.OnItemCheckListener,
         AddFragment.AddItemDialogListener, AdapterView.OnItemSelectedListener, EditItemFragment.EditItemDialogListener {
 
+    public static final String TAG = "ShoppingList";
+
     private ShoppingListViewAdapter adapter;
     private RecyclerView recyclerView;
     private ShoppingList shoppingList;
@@ -74,12 +76,12 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
 
         List<String> lists = Arrays.asList(getResources().getStringArray(R.array.lists_array));
 
-        currentList = fileService.getCurrentList("currentList");
+        currentList = fileService.getCurrentList(ListConstants.CURRENT_LIST);
         if (currentList.isEmpty()) {
             currentList = lists.get(0);
         }
 
-        String filename = currentList + "-listFile";
+        String filename = fileService.getShoppingListFilename(currentList);
         shoppingList = fileService.readShoppingList(filename);
 
         // set up the shopping list RecyclerView
@@ -116,11 +118,11 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onStop () {
-        String filename = currentList + "-listFile";
         FileService fileService = new FileService(getContext());
+        String filename = fileService.getShoppingListFilename(currentList);
         fileService.saveShoppingList(filename, shoppingList);
 
-        fileService.saveCurrentList("currentList", currentList);
+        fileService.saveCurrentList(ListConstants.CURRENT_LIST, currentList);
 
         super.onStop();
     }
@@ -187,13 +189,13 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
 
         // Save current list
         FileService fileService = new FileService(getContext());
-        String filename = currentList + "-listFile";
+        String filename = fileService.getShoppingListFilename(currentList);
         fileService.saveShoppingList(filename, shoppingList);
 
         // Switch to the other list
         currentList = listName;
 
-        filename = currentList + "-listFile";
+        filename = fileService.getShoppingListFilename(currentList);
         ShoppingList newShoppingList = fileService.readShoppingList(filename);
 
         shoppingList.clear();
@@ -213,9 +215,9 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         Bundle bundle = new Bundle();
         ArrayList<Parcelable> parcelableList = new ArrayList<>();
         parcelableList.addAll(shoppingList.toList(false));
-        bundle.putParcelableArrayList("data", parcelableList);
-        bundle.putString("currentList", currentList);
-        intent.putExtra("shoppingList", bundle);
+        bundle.putParcelableArrayList(ListConstants.DATA, parcelableList);
+        bundle.putString(ListConstants.CURRENT_LIST, currentList);
+        intent.putExtra(ListConstants.SHOPPING_LIST, bundle);
 
         startActivityForResult(intent, 2);
     }

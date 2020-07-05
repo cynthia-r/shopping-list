@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +20,8 @@ import android.widget.TextView;
  * create an instance of this fragment.
  */
 public class EditCatalogFragment extends DialogFragment {
+
+    public static final String TAG = "EditCatalog";
 
     private String mItemName;
     private int mPosition;
@@ -47,7 +48,7 @@ public class EditCatalogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder.setTitle("Add item");
+        alertDialogBuilder.setTitle(R.string.edit_item);
 
         View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add_catalog_item, (ViewGroup) getView(), false);
         alertDialogBuilder.setView(viewInflated);
@@ -56,21 +57,21 @@ public class EditCatalogFragment extends DialogFragment {
         final EditText editTextView = viewInflated.findViewById(R.id.new_item);
         editTextView.setText(mItemName);
 
-        alertDialogBuilder.setPositiveButton("Save",  new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setPositiveButton(R.string.save,  new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // On success
                 mEditCatalogItemDialogListener.onItemEdit(mPosition, editTextView.getText().toString());
             }
         });
-        alertDialogBuilder.setNeutralButton("Delete Item",  new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNeutralButton(R.string.delete_item,  new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // On success
                 mEditCatalogItemDialogListener.onItemDelete(mPosition);
             }
         });
-        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (dialog != null) {

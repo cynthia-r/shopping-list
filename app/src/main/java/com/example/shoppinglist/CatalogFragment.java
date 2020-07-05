@@ -27,6 +27,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class CatalogFragment extends Fragment implements AddCatalogItemFragment.AddCatalogItemDialogListener, EditCatalogFragment.EditCatalogItemDialogListener,
         CatalogListViewAdapter.OnStartDragListener {
 
+    public static final String TAG = "Catalog";
+
     private CatalogListViewAdapter adapter;
     private ItemTouchHelper mItemTouchHelper;
     private MarketItems marketItems;
@@ -34,7 +36,6 @@ public class CatalogFragment extends Fragment implements AddCatalogItemFragment.
     public CatalogFragment() {
         // Required empty public constructor
     }
-
 
     public static CatalogFragment newInstance() {
         CatalogFragment fragment = new CatalogFragment();
@@ -61,7 +62,7 @@ public class CatalogFragment extends Fragment implements AddCatalogItemFragment.
         MainActivity activity = (MainActivity)getActivity();
 
         FileService fileService = new FileService(getContext());
-        marketItems = fileService.readMarketItems("catalog");
+        marketItems = fileService.readMarketItems(ListConstants.CATALOG);
 
         // set up the shopping list RecyclerView
         RecyclerView recyclerView = activity.findViewById(R.id.catalog_list);
@@ -83,7 +84,7 @@ public class CatalogFragment extends Fragment implements AddCatalogItemFragment.
     @Override
     public void onStop () {
 
-        String filename = "catalog";
+        String filename = ListConstants.CATALOG;
         FileService fileService = new FileService(getContext());
         fileService.saveMarketItems(filename, marketItems);
 

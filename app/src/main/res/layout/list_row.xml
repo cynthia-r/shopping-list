@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingLeft="12dp"
-    android:paddingRight="12dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp">
+    android:paddingLeft="@dimen/large_padding"
+    android:paddingRight="@dimen/large_padding"
+    android:paddingTop="@dimen/medium_padding"
+    android:paddingBottom="@dimen/medium_padding">
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_toRightOf="@id/checkbox"
-        android:textSize="18sp"/>
+        android:textSize="@dimen/medium_font"/>
 
     <TextView
         android:id="@+id/quantity"
@@ -30,6 +30,6 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_toRightOf="@id/item"
-        android:textSize="18sp"/>
+        android:textSize="@dimen/medium_font"/>
 
 </RelativeLayout>

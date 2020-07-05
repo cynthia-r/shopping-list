@@ -19,12 +19,7 @@ import com.example.shoppinglist.service.DateService;
 import com.example.shoppinglist.service.FileService;
 import com.example.shoppinglist.service.SuggestedItemsService;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class ConfirmActivity extends AppCompatActivity {
@@ -38,8 +33,8 @@ public class ConfirmActivity extends AppCompatActivity {
         setContentView(R.layout.activity_confirm);
 
         // Retrieve the list
-        Bundle bundle = getIntent().getBundleExtra("shoppingList");
-        ArrayList<Parcelable> parcelableList = bundle.getParcelableArrayList("data");
+        Bundle bundle = getIntent().getBundleExtra(ListConstants.SHOPPING_LIST);
+        ArrayList<Parcelable> parcelableList = bundle.getParcelableArrayList(ListConstants.DATA);
 
         final List<ShoppingListItem> itemList = new ArrayList<>();
         final List<ShoppingListItem> selectedItemList = new ArrayList<>();
@@ -52,7 +47,7 @@ public class ConfirmActivity extends AppCompatActivity {
         }
 
         // Retrieve the list name
-        currentList = bundle.getString("currentList");
+        currentList = bundle.getString(ListConstants.CURRENT_LIST);
 
         // Set up the confirmed list RecyclerView
         RecyclerView recyclerView = findViewById(R.id.main_list);
@@ -83,11 +78,11 @@ public class ConfirmActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void save(List<ShoppingListItem> items, List<ShoppingListItem> selectedItems) {
-        String filename = currentList + "-listFile";
         FileService fileService = new FileService(this);
+        String filename = fileService.getShoppingListFilename(currentList);
         fileService.saveShoppingList(filename, selectedItems);
 
-        String previouslyBoughtFilename = currentList + "-boughtListFile";
+        String previouslyBoughtFilename = fileService.getBoughtListFilename(currentList);
         PreviouslyBoughtItems previouslyBoughtItems = fileService.readPreviouslyBoughtItems(previouslyBoughtFilename);
 
         SuggestedItemsService suggestedItemsService = new SuggestedItemsService(previouslyBoughtItems);

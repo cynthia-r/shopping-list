@@ -9,10 +9,10 @@
         android:id="@+id/new_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="12dp"
+        android:layout_marginLeft="@dimen/large_padding"
+        android:layout_marginRight="@dimen/large_padding"
         android:hint="Item name"
-        android:textColor="#000000"
-        android:textColorHint="#999" />
+        android:textColor="@android:color/black"
+        android:textColorHint="@color/colorLightGrey" />
 
 </FrameLayout>

@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.core.view.MotionEventCompat;
 
-// TODO see if I keep this
 public class OnItemTouchListener implements View.OnTouchListener {
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -19,7 +18,7 @@ public class OnItemTouchListener implements View.OnTouchListener {
 
         if (motionAction == MotionEvent.ACTION_DOWN) {
             textView.setAlpha(0.9f);
-            view.setBackgroundColor(Color.parseColor("#f5f5f5"));
+            view.setBackgroundColor(view.getContext().getResources().getColor(R.color.colorWhiteGrey));
         }
 
         if (motionAction == MotionEvent.ACTION_UP || motionAction == MotionEvent.ACTION_CANCEL) {

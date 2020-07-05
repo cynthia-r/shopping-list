@@ -20,7 +20,8 @@ import android.widget.NumberPicker;
  * create an instance of this fragment.
  */
 public class EditItemFragment extends DialogFragment {
-    private static final String ARG_PARAM1 = "param1";
+
+    public static final String TAG = "EditItem";
 
     private String mItemName;
     private int mQuantity;
@@ -48,7 +49,7 @@ public class EditItemFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder.setTitle("Edit item");
+        alertDialogBuilder.setTitle(R.string.edit_item);
 
         View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add, (ViewGroup) getView(), false);
         alertDialogBuilder.setView(viewInflated);
@@ -64,20 +65,20 @@ public class EditItemFragment extends DialogFragment {
         numberPickerView.setValue(mQuantity > 0 ? mQuantity : 1);
         numberPickerView.setWrapSelectorWheel(false);
 
-        alertDialogBuilder.setPositiveButton("Save",  new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setPositiveButton(R.string.save,  new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // On success
                 mEditItemDialogListener.onItemEdit(mItemName, numberPickerView.getValue());
             }
         });
-        alertDialogBuilder.setNeutralButton("Delete Item", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNeutralButton(R.string.delete_item, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mEditItemDialogListener.onItemDelete(mItemName);
             }
         });
-        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (dialog != null) {

@@ -37,8 +37,8 @@ public class SuggestedItemsActivity extends AppCompatActivity implements Shoppin
         setContentView(R.layout.activity_suggested_items);
 
         // Retrieve the list
-        Bundle bundle = getIntent().getBundleExtra("shoppingList");
-        ArrayList<Parcelable> parcelableList = bundle.getParcelableArrayList("data");
+        Bundle bundle = getIntent().getBundleExtra(ListConstants.SHOPPING_LIST);
+        ArrayList<Parcelable> parcelableList = bundle.getParcelableArrayList(ListConstants.DATA);
 
         // Use default comparator since the order of the items doesn't matter here
         shoppingList = new ShoppingList(new Comparator<String>() {
@@ -54,12 +54,12 @@ public class SuggestedItemsActivity extends AppCompatActivity implements Shoppin
         }
 
         // Retrieve the list name
-        currentList = bundle.getString("currentList");
+        currentList = bundle.getString(ListConstants.CURRENT_LIST);
 
-        String filename = currentList + "-listFile";
+
         FileService fileService = new FileService(this);
 
-        String previouslyBoughtFilename = currentList + "-boughtListFile";
+        String previouslyBoughtFilename = fileService.getBoughtListFilename(currentList);
         PreviouslyBoughtItems previouslyBoughtItems = fileService.readPreviouslyBoughtItems(previouslyBoughtFilename);
         SuggestedItemsService suggestedItemsService = new SuggestedItemsService(previouslyBoughtItems);
 
@@ -103,7 +103,7 @@ public class SuggestedItemsActivity extends AppCompatActivity implements Shoppin
 
         EditItemFragment alertDialog = EditItemFragment.newInstance(item.getItemName(), item.getQuantity());
         alertDialog.setEditItemDialogListener(this);
-        alertDialog.show(fm, "fragment_alert");
+        alertDialog.show(fm, EditItemFragment.TAG);
     }
 
     @Override
@@ -139,9 +139,9 @@ public class SuggestedItemsActivity extends AppCompatActivity implements Shoppin
         Bundle bundle = new Bundle();
         ArrayList<Parcelable> parcelableList = new ArrayList<>();
         parcelableList.addAll(shoppingList.toList(false));
-        bundle.putParcelableArrayList("data", parcelableList);
-        bundle.putString("currentList", currentList);
-        intent.putExtra("shoppingList", bundle);
+        bundle.putParcelableArrayList(ListConstants.DATA, parcelableList);
+        bundle.putString(ListConstants.CURRENT_LIST, currentList);
+        intent.putExtra(ListConstants.SHOPPING_LIST, bundle);
 
         startActivityForResult(intent, 2);
     }

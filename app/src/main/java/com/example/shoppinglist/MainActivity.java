@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         currentNavItemId = R.id.nav_shopping_list;
         displayFragment(currentNavItemId);
         navigationView.getMenu().findItem(currentNavItemId).setChecked(true);
-
     }
 
     @Override
@@ -83,15 +82,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             case R.id.nav_shopping_list:
                 fragmentClass = ShoppingListFragment.class;
-                tag = "ShoppingList";
+                tag = ShoppingListFragment.TAG;
                 break;
             case R.id.nav_catalog:
                 fragmentClass = CatalogFragment.class;
-                tag = "Catalog";
+                tag = CatalogFragment.TAG;
                 break;
             default:
                 fragmentClass = ShoppingListFragment.class;
-                tag = "ShoppingList";
+                tag = ShoppingListFragment.TAG;
+                break;
         }
 
         try {
@@ -123,17 +123,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Fragment fragment = fm.findFragmentById(R.id.fragment_frame);
         String tag = fragment.getTag();
-        if (tag == "ShoppingList") {
+        if (tag == ShoppingListFragment.TAG) {
             ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragment;
             AddFragment alertDialog = AddFragment.newInstance();
             alertDialog.setAddItemDialogListener(shoppingListFragment);
-            alertDialog.show(fm, "fragment_alert");
+            alertDialog.show(fm, AddFragment.TAG);
         }
-        else if (tag == "Catalog") {
+        else if (tag == CatalogFragment.TAG) {
             CatalogFragment catalogFragment = (CatalogFragment)fragment;
             AddCatalogItemFragment alertDialog = AddCatalogItemFragment.newInstance();
             alertDialog.setAddCatalogItemDialogListener(catalogFragment);
-            alertDialog.show(fm, "fragment_alert");
+            alertDialog.show(fm, AddCatalogItemFragment.TAG);
         }
     }
 
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragment;
         EditItemFragment alertDialog = EditItemFragment.newInstance(item.getItemName(), item.getQuantity());
         alertDialog.setEditItemDialogListener(shoppingListFragment);
-        alertDialog.show(fm, "fragment_alert");
+        alertDialog.show(fm, EditItemFragment.TAG);
     }
 
     @Override
@@ -158,6 +158,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         CatalogFragment catalogFragment = (CatalogFragment)fragment;
         EditCatalogFragment alertDialog = EditCatalogFragment.newInstance(item.getName(), position);
         alertDialog.setEditCatalogItemDialogListener(catalogFragment);
-        alertDialog.show(fm, "fragment_alert");
+        alertDialog.show(fm, EditCatalogFragment.TAG);
     }
 }

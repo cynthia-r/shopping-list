@@ -21,6 +21,8 @@ import android.widget.EditText;
  */
 public class AddCatalogItemFragment extends DialogFragment {
 
+    public static final String TAG = "AddCatalogItem";
+
     private AddCatalogItemDialogListener mAddCatalogItemDialogListener;
 
     public AddCatalogItemFragment() {
@@ -41,7 +43,7 @@ public class AddCatalogItemFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder.setTitle("Add item");
+        alertDialogBuilder.setTitle(R.string.add_item);
 
         View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add_catalog_item, (ViewGroup) getView(), false);
         alertDialogBuilder.setView(viewInflated);
@@ -49,14 +51,14 @@ public class AddCatalogItemFragment extends DialogFragment {
         // Locate the EditText in listview_main.xml
         final EditText editTextView = viewInflated.findViewById(R.id.new_item);
 
-        alertDialogBuilder.setPositiveButton("OK",  new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setPositiveButton(R.string.ok,  new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // On success
                 mAddCatalogItemDialogListener.onItemAdd(editTextView.getText().toString());
             }
         });
-        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (dialog != null) {

@@ -13,4 +13,15 @@
         <item>Vendredi</item>
         <item>Test</item>
     </string-array>
+
+    <string name="add_item">Add item</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="edit_item">Edit item</string>
+    <string name="delete_item">Delete Item</string>
+
+    <string name="done">Done</string>
+    <string name="done_shopping">Done shopping</string>
+    <string name="export">Export</string>
 </resources>

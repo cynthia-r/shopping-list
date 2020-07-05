@@ -30,6 +30,8 @@ import com.example.shoppinglist.service.FileService;
  */
 public class AddFragment extends DialogFragment implements SearchView.OnQueryTextListener {
 
+    public static final String TAG = "Add";
+
     private AddItemDialogListener mAddItemDialogListener;
 
     public AddFragment() {
@@ -51,7 +53,7 @@ public class AddFragment extends DialogFragment implements SearchView.OnQueryTex
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder.setTitle("Add item");
+        alertDialogBuilder.setTitle(R.string.add_item);
 
         View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add, (ViewGroup) getView(), false);
         alertDialogBuilder.setView(viewInflated);
@@ -61,7 +63,7 @@ public class AddFragment extends DialogFragment implements SearchView.OnQueryTex
 
         // Setup the market items in the autocomplete view
         FileService fileService = new FileService(getContext());
-        MarketItems marketItems = fileService.readMarketItems("catalog");
+        MarketItems marketItems = fileService.readMarketItems(ListConstants.CATALOG);
         String[] itemNames = new String[marketItems.size()];
         for (int i=0; i<itemNames.length; i++) {
             itemNames[i] = marketItems.get(i).getName();
@@ -77,14 +79,14 @@ public class AddFragment extends DialogFragment implements SearchView.OnQueryTex
         numberPickerView.setValue(1);
         numberPickerView.setWrapSelectorWheel(false);
 
-        alertDialogBuilder.setPositiveButton("OK",  new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setPositiveButton(R.string.ok,  new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // On success
                 mAddItemDialogListener.onItemAdd(autoTextView.getText().toString(), numberPickerView.getValue());
             }
         });
-        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (dialog != null) {

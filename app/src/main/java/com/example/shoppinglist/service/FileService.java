@@ -29,10 +29,20 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 public class FileService {
+    private static final String LIST_FILE = "-listFile";
+    private static final String BOUGHT_LIST_FILE = "-boughtListFile";
     private Context mContext;
 
     public FileService(Context context) {
         mContext = context;
+    }
+
+    public String getShoppingListFilename(String currentList) {
+        return currentList + LIST_FILE;
+    }
+
+    public String getBoughtListFilename(String currentList) {
+        return currentList + BOUGHT_LIST_FILE;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)

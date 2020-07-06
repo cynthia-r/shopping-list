@@ -15,11 +15,11 @@ import android.widget.Button;
 
 import com.example.shoppinglist.model.MarketItemComparator;
 import com.example.shoppinglist.model.MarketItems;
+import com.example.shoppinglist.model.PreviouslyBoughtItemComparator;
 import com.example.shoppinglist.model.PreviouslyBoughtItems;
 import com.example.shoppinglist.model.ShoppingList;
 import com.example.shoppinglist.model.ShoppingListItem;
 import com.example.shoppinglist.service.FileService;
-import com.example.shoppinglist.service.SuggestedItemsService;
 
 import java.util.ArrayList;
 
@@ -37,9 +37,9 @@ public class SuggestedItemsActivity extends AppCompatActivity implements Shoppin
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_suggested_items);
 
-        // Retrieve the list
+        // Retrieve the shopping list
         Bundle bundle = getIntent().getBundleExtra(ListConstants.SHOPPING_LIST);
-        ArrayList<Parcelable> parcelableList = bundle.getParcelableArrayList(ListConstants.DATA);
+        ArrayList<Parcelable> parcelableList = bundle.getParcelableArrayList(ListConstants.SHOPPING_LIST_DATA);
 
         FileService fileService = new FileService(this);
 
@@ -55,12 +55,18 @@ public class SuggestedItemsActivity extends AppCompatActivity implements Shoppin
         // Retrieve the list name
         currentList = bundle.getString(ListConstants.CURRENT_LIST);
 
+        // Initialize a shopping list with all the recommended items unselected
         String previouslyBoughtFilename = fileService.getBoughtListFilename(currentList);
         PreviouslyBoughtItems previouslyBoughtItems = fileService.readPreviouslyBoughtItems(previouslyBoughtFilename);
-        SuggestedItemsService suggestedItemsService = new SuggestedItemsService(previouslyBoughtItems);
+        PreviouslyBoughtItemComparator itemComparator2 = new PreviouslyBoughtItemComparator(previouslyBoughtItems);
 
-        // Initialize a shopping list with all the recommended items unselected
-        suggestedItemList = suggestedItemsService.getSuggestedItems(shoppingList);
+        ArrayList<Parcelable> suggestedItemParcelableList = bundle.getParcelableArrayList(ListConstants.SUGGESTED_LIST_DATA);
+        suggestedItemList = new ShoppingList(itemComparator2);
+
+        for (Parcelable parcelable : suggestedItemParcelableList) {
+            ShoppingListItem item = (ShoppingListItem)parcelable;
+            suggestedItemList.add(item);
+        }
 
         // Set up the suggested list RecyclerView
         RecyclerView recommendedRecyclerView = findViewById(R.id.recommended_list);
@@ -137,9 +143,13 @@ public class SuggestedItemsActivity extends AppCompatActivity implements Shoppin
         Bundle bundle = new Bundle();
         ArrayList<Parcelable> parcelableList = new ArrayList<>();
         parcelableList.addAll(shoppingList.toList(false));
-        bundle.putParcelableArrayList(ListConstants.DATA, parcelableList);
+        bundle.putParcelableArrayList(ListConstants.SHOPPING_LIST_DATA, parcelableList);
         bundle.putString(ListConstants.CURRENT_LIST, currentList);
         intent.putExtra(ListConstants.SHOPPING_LIST, bundle);
+
+        if (suggestedItemList.size() == 0) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
 
         startActivityForResult(intent, 2);
     }

@@ -19,8 +19,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.example.shoppinglist.model.PreviouslyBoughtItems;
 import com.example.shoppinglist.model.ShoppingList;
 import com.example.shoppinglist.service.FileService;
+import com.example.shoppinglist.service.SuggestedItemsService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -196,12 +198,47 @@ public class ShoppingListFragment extends Fragment implements AdapterView.OnItem
 
         ShoppingList shoppingList = getCurrentListFragment().getShoppingList();
 
-        Intent intent = new Intent(getContext(), SuggestedItemsActivity.class);
+        FileService fileService = new FileService(getContext());
+
+        // Check if there are any recommended items
+        String previouslyBoughtFilename = fileService.getBoughtListFilename(currentList);
+        PreviouslyBoughtItems previouslyBoughtItems = fileService.readPreviouslyBoughtItems(previouslyBoughtFilename);
+        SuggestedItemsService suggestedItemsService = new SuggestedItemsService(previouslyBoughtItems);
+
+        // Initialize a shopping list with all the recommended items unselected
+        ShoppingList suggestedItemList = suggestedItemsService.getSuggestedItems(shoppingList);
+
+        // Go to the confirm activity directly if there are no recommended items
+        if (suggestedItemList.size() == 0) {
+            openConfirmActivity(shoppingList);
+        }
+        // Otherwise go to the suggested items activity
+        else {
+            Intent intent = new Intent(getContext(), SuggestedItemsActivity.class);
+
+            Bundle bundle = new Bundle();
+            ArrayList<Parcelable> parcelableList = new ArrayList<>();
+            parcelableList.addAll(shoppingList.toList(false));
+            bundle.putParcelableArrayList(ListConstants.SHOPPING_LIST_DATA, parcelableList);
+
+            ArrayList<Parcelable> suggestedItemParcelableList = new ArrayList<>();
+            suggestedItemParcelableList.addAll(suggestedItemList.toList(false));
+            bundle.putParcelableArrayList(ListConstants.SUGGESTED_LIST_DATA, suggestedItemParcelableList);
+
+            bundle.putString(ListConstants.CURRENT_LIST, currentList);
+            intent.putExtra(ListConstants.SHOPPING_LIST, bundle);
+
+            startActivityForResult(intent, 2);
+        }
+    }
+
+    private void openConfirmActivity(ShoppingList shoppingList){
+        Intent intent = new Intent(getContext(), ConfirmActivity.class);
 
         Bundle bundle = new Bundle();
         ArrayList<Parcelable> parcelableList = new ArrayList<>();
         parcelableList.addAll(shoppingList.toList(false));
-        bundle.putParcelableArrayList(ListConstants.DATA, parcelableList);
+        bundle.putParcelableArrayList(ListConstants.SHOPPING_LIST_DATA, parcelableList);
         bundle.putString(ListConstants.CURRENT_LIST, currentList);
         intent.putExtra(ListConstants.SHOPPING_LIST, bundle);
 

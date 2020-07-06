@@ -34,7 +34,7 @@ public class ConfirmActivity extends AppCompatActivity {
 
         // Retrieve the list
         Bundle bundle = getIntent().getBundleExtra(ListConstants.SHOPPING_LIST);
-        ArrayList<Parcelable> parcelableList = bundle.getParcelableArrayList(ListConstants.DATA);
+        ArrayList<Parcelable> parcelableList = bundle.getParcelableArrayList(ListConstants.SHOPPING_LIST_DATA);
 
         final List<ShoppingListItem> itemList = new ArrayList<>();
         final List<ShoppingListItem> selectedItemList = new ArrayList<>();
